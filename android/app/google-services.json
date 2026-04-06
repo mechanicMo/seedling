@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "705524118472",
+    "project_id": "seedling-5a9f6",
+    "storage_bucket": "seedling-5a9f6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:705524118472:android:75082e988b62b0b02ec6fd",
+        "android_client_info": {
+          "package_name": "com.seedlingapp.seedling"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "705524118472-p9mkbd020a3ino1anct73hqpd3j4hn3b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.seedlingapp.seedling",
+            "certificate_hash": "36d01689cc5fb00251867a8558adf2aec6c919bf"
+          }
+        },
+        {
+          "client_id": "705524118472-smrov8kes16oebmrurkf83bblmu7fo5a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChx7U_FLpqOw6Z2Jr-AC3QJFxRziHvCVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "705524118472-smrov8kes16oebmrurkf83bblmu7fo5a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

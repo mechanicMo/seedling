@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users can only access their own document
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      // Child profiles belong to their parent
+      match /children/{childId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+
+        // Session history belongs to parent
+        match /sessions/{sessionId} {
+          allow read, write: if request.auth != null && request.auth.uid == userId;
+        }
+      }
+
+      // Chat session history
+      match /chat_sessions/{sessionId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // Content library: authenticated read, no client writes (Cloud Functions only)
+    match /parent_guides/{guideId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    match /child_activities/{activityId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+  }
+}
