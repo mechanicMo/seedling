@@ -22,7 +22,6 @@ dependencies:
 
   # State management
   flutter_riverpod: ^2.5.1
-  riverpod_annotation: ^2.3.5
 
   # Models
   freezed_annotation: ^2.4.4
@@ -35,9 +34,9 @@ dev_dependencies:
   build_runner: ^2.4.13
   freezed: ^2.5.7
   json_serializable: ^6.8.0
-  riverpod_generator: ^2.4.3
-  custom_lint: ^0.7.3
-  riverpod_lint: ^2.3.13
+  # riverpod_generator removed — pulls in riverpod_analyzer_utils -> custom_lint_core -> analyzer_plugin 0.12.0
+  # which is broken with analyzer 7.x. Providers written manually using Riverpod 2.x Notifier/AsyncNotifier.
+  # custom_lint/riverpod_lint also removed for same reason.
 
   # Testing
   fake_cloud_firestore: ^3.0.3
