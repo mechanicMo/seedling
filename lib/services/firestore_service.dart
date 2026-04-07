@@ -59,4 +59,27 @@ class FirestoreService {
     if (!doc.exists) return null;
     return AppUser.fromFirestore(doc);
   }
+
+  // ── Parent Guides ────────────────────────────────────────────────────────────
+
+  /// Fetches all published ParentGuides for a given age range.
+  Future<List<ParentGuideDoc>> getParentGuides({String? ageRange}) async {
+    Query<Map<String, dynamic>> query = _db
+        .collection('parent_guides')
+        .where('published', isEqualTo: true);
+
+    if (ageRange != null) {
+      query = query.where('age_ranges', arrayContains: ageRange);
+    }
+
+    final snapshot = await query.get();
+    return snapshot.docs.map(ParentGuideDoc.fromFirestore).toList();
+  }
+
+  /// Fetches a single ParentGuide by ID.
+  Future<ParentGuideDoc?> getParentGuide(String guideId) async {
+    final doc = await _db.collection('parent_guides').doc(guideId).get();
+    if (!doc.exists) return null;
+    return ParentGuideDoc.fromFirestore(doc);
+  }
 }
