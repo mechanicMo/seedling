@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:seedling/core/theme/app_theme.dart';
 import 'package:seedling/features/auth/auth_providers.dart';
+import 'package:seedling/features/child/child_providers.dart';
 import 'package:seedling/features/parent/parent_providers.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
+import 'package:seedling/services/firestore_service.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -68,12 +70,27 @@ class DashboardScreen extends ConsumerWidget {
                   title: 'Hand to ${activeChild?.name ?? 'child'}',
                   subtitle: 'Start a learning session',
                   color: AppColors.softBrown,
-                  onTap: () {
-                    // Placeholder — wired in Plan 4
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Child mode — coming in Plan 4')),
-                    );
+                  onTap: () async {
+                    final firestoreService = ref.read(firestoreServiceProvider);
+                    final authAsync = ref.read(authStateProvider);
+                    final userId = authAsync.valueOrNull?.uid;
+                    if (userId == null || activeChild == null) return;
+
+                    try {
+                      final sessionId =
+                          await firestoreService.startChildSession(userId, activeChild.id);
+                      ref.read(childSessionProvider.notifier)
+                        ..reset()
+                        ..setSessionId(sessionId);
+
+                      if (context.mounted) context.push('/child/home');
+                    } catch (e) {
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error: ${e.toString()}')),
+                        );
+                      }
+                    }
                   },
                 ),
                 const SizedBox(height: 32),

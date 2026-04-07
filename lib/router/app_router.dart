@@ -13,8 +13,12 @@ import 'package:seedling/features/parent/content_library_screen.dart';
 import 'package:seedling/features/parent/guide_detail_screen.dart';
 import 'package:seedling/features/parent/session_reports_screen.dart';
 import 'package:seedling/features/parent/situation_guide_screen.dart';
+import 'package:seedling/features/child/activity_player_screen.dart';
+import 'package:seedling/features/child/child_home_screen.dart';
+import 'package:seedling/features/child/session_complete_screen.dart';
 import 'package:seedling/features/profiles/add_edit_profile_screen.dart';
 import 'package:seedling/features/profiles/profiles_screen.dart';
+import 'package:seedling/models/models.dart';
 import 'package:seedling/services/firestore_service.dart';
 
 class _GoRouterRefreshStream extends ChangeNotifier {
@@ -63,6 +67,24 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/login', builder: (_, __) => const LoginScreen()),
       GoRoute(path: '/signup', builder: (_, __) => const SignupScreen()),
       GoRoute(path: '/onboarding', builder: (_, __) => const OnboardingScreen()),
+
+      // Child mode routes (full-screen, no bottom nav)
+      GoRoute(
+        path: '/child/home',
+        builder: (_, __) => const ChildHomeScreen(),
+      ),
+      GoRoute(
+        path: '/child/activity/:activityId',
+        builder: (context, state) {
+          final activity = state.extra as ChildActivity?;
+          if (activity == null) return const Scaffold(body: Center(child: Text('Activity not found')));
+          return ActivityPlayerScreen(activity: activity);
+        },
+      ),
+      GoRoute(
+        path: '/child/complete',
+        builder: (_, __) => const SessionCompleteScreen(),
+      ),
 
       // Parent shell with bottom nav
       StatefulShellRoute.indexedStack(

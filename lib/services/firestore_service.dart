@@ -100,4 +100,59 @@ class FirestoreService {
         .map((snap) =>
             snap.docs.map(ChildSession.fromFirestore).toList());
   }
+
+  // ── Child Activities ──────────────────────────────────────────────────────
+
+  /// Fetches published activities for a child's age range and enabled types.
+  Future<List<ChildActivity>> getChildActivities({
+    required String ageRange,
+    required List<String> enabledTypes,
+  }) async {
+    if (enabledTypes.isEmpty) return [];
+
+    final snapshot = await _db
+        .collection(AppConstants.childActivitiesCollection)
+        .where('published', isEqualTo: true)
+        .where('age_ranges', arrayContains: ageRange)
+        .get();
+
+    return snapshot.docs
+        .map(ChildActivity.fromFirestore)
+        .where((a) => enabledTypes.contains(a.type))
+        .toList();
+  }
+
+  // ── Session Lifecycle ─────────────────────────────────────────────────────
+
+  /// Creates a new session document and returns its ID.
+  Future<String> startChildSession(String userId, String childId) async {
+    final docRef = await _childrenRef(userId)
+        .doc(childId)
+        .collection(AppConstants.sessionsCollection)
+        .add({
+      'started_at': FieldValue.serverTimestamp(),
+      'duration_minutes': 0,
+      'activities_completed': [],
+    });
+    return docRef.id;
+  }
+
+  /// Writes final session data. Report generation is triggered separately via Cloud Function.
+  Future<void> endChildSession({
+    required String userId,
+    required String childId,
+    required String sessionId,
+    required List<Map<String, dynamic>> completedActivities,
+    required int durationMinutes,
+  }) async {
+    await _childrenRef(userId)
+        .doc(childId)
+        .collection(AppConstants.sessionsCollection)
+        .doc(sessionId)
+        .update({
+      'ended_at': FieldValue.serverTimestamp(),
+      'duration_minutes': durationMinutes,
+      'activities_completed': completedActivities,
+    });
+  }
 }
