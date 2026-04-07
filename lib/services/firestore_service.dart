@@ -1,0 +1,62 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:seedling/core/constants/app_constants.dart';
+import 'package:seedling/models/models.dart';
+
+class FirestoreService {
+  FirestoreService({FirebaseFirestore? firestore})
+      : _db = firestore ?? FirebaseFirestore.instance;
+
+  final FirebaseFirestore _db;
+
+  // ── Child Profiles ──────────────────────────────────────────────────────────
+
+  CollectionReference<Map<String, dynamic>> _childrenRef(String userId) => _db
+      .collection(AppConstants.usersCollection)
+      .doc(userId)
+      .collection(AppConstants.childrenCollection);
+
+  /// Creates a child profile. The [profile.id] is ignored — Firestore assigns a new id.
+  Future<ChildProfile> createChildProfile(
+      String userId, ChildProfile profile) async {
+    final docRef = await _childrenRef(userId).add(profile.toFirestore());
+    final snapshot = await docRef.get();
+    return ChildProfile.fromFirestore(snapshot);
+  }
+
+  /// Returns a real-time stream of child profiles for [userId].
+  Stream<List<ChildProfile>> getChildProfiles(String userId) {
+    return _childrenRef(userId).snapshots().map(
+          (snapshot) => snapshot.docs
+              .map((doc) => ChildProfile.fromFirestore(doc))
+              .toList(),
+        );
+  }
+
+  /// Updates an existing child profile. [profile.id] must be set.
+  Future<void> updateChildProfile(String userId, ChildProfile profile) async {
+    await _childrenRef(userId).doc(profile.id).update(profile.toFirestore());
+  }
+
+  /// Deletes a child profile by id.
+  Future<void> deleteChildProfile(String userId, String childId) async {
+    await _childrenRef(userId).doc(childId).delete();
+  }
+
+  /// Returns true if the user has at least one child profile.
+  Future<bool> hasChildProfiles(String userId) async {
+    final snapshot = await _childrenRef(userId).limit(1).get();
+    return snapshot.docs.isNotEmpty;
+  }
+
+  // ── User Document ────────────────────────────────────────────────────────────
+
+  /// Fetches the user document. Returns null if it doesn't exist.
+  Future<AppUser?> getUser(String userId) async {
+    final doc = await _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .get();
+    if (!doc.exists) return null;
+    return AppUser.fromFirestore(doc);
+  }
+}

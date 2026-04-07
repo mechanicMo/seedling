@@ -34,12 +34,27 @@ class ChildProfile with _$ChildProfile {
 
   factory ChildProfile.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return ChildProfile.fromJson({
-      ...data,
-      'id': doc.id,
-      if (data['birth_date'] is Timestamp)
-        'birthDate': (data['birth_date'] as Timestamp).toDate().toIso8601String(),
-    });
+    final contentSelectionData = data['content_selection'] as Map<String, dynamic>?;
+    return ChildProfile(
+      id: doc.id,
+      name: data['name'] as String,
+      birthDate: data['birth_date'] is Timestamp
+          ? (data['birth_date'] as Timestamp).toDate()
+          : DateTime.parse(data['birth_date'] as String),
+      ageRange: data['age_range'] as String,
+      sessionTimerMinutes: data['session_timer_minutes'] as int? ??
+          AppConstants.defaultSessionTimerMinutes,
+      contentSelection: contentSelectionData != null
+          ? ContentSelection(
+              enabledCategories: List<String>.from(
+                  contentSelectionData['enabled_categories'] as List? ??
+                      AppConstants.allCategories),
+              enabledActivityTypes: List<String>.from(
+                  contentSelectionData['enabled_activity_types'] as List? ??
+                      AppConstants.allActivityTypes),
+            )
+          : const ContentSelection(),
+    );
   }
 
   /// Derives age range string from birth date. Call when creating or updating a profile.
