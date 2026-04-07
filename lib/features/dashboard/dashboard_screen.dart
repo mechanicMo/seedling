@@ -56,13 +56,7 @@ class DashboardScreen extends ConsumerWidget {
                   title: 'Help me now',
                   subtitle: 'Get guidance for what\'s happening right now',
                   color: AppColors.seedGreen,
-                  onTap: () {
-                    // Placeholder — wired in Plan 3
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                          content: Text('Situation guide — coming in Plan 3')),
-                    );
-                  },
+                  onTap: () => context.push('/guidance'),
                 ),
                 const SizedBox(height: 16),
 
