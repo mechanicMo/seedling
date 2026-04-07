@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:seedling/core/theme/app_theme.dart';
 import 'package:seedling/features/auth/auth_providers.dart';
+import 'package:seedling/features/parent/parent_providers.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
 
@@ -74,6 +76,14 @@ class DashboardScreen extends ConsumerWidget {
                     );
                   },
                 ),
+                const SizedBox(height: 32),
+
+                // Recent sessions preview
+                Text('Recent Sessions',
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 13)),
+                const SizedBox(height: 8),
+                _RecentSessionPreview(activeChild: activeChild),
               ],
             ),
           ),
@@ -171,6 +181,104 @@ class _QuickActionCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _RecentSessionPreview extends ConsumerWidget {
+  const _RecentSessionPreview({required this.activeChild});
+  final ChildProfile? activeChild;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final sessionsAsync = ref.watch(childSessionsProvider);
+
+    return sessionsAsync.when(
+      loading: () => const SizedBox(
+        height: 120,
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (e, _) => Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.red.withOpacity(0.05),
+          border: Border.all(color: Colors.red.withOpacity(0.2)),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Text('Error loading sessions',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+      ),
+      data: (sessions) {
+        if (activeChild == null) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.05),
+              border: Border.all(color: Colors.grey.withOpacity(0.2)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text('Select a child to view sessions',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          );
+        }
+
+        if (sessions.isEmpty) {
+          return Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.05),
+              border: Border.all(color: Colors.grey.withOpacity(0.2)),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text('No sessions yet',
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+          );
+        }
+
+        final mostRecent = sessions.first;
+        final fmt = DateFormat('MMM d, h:mm a');
+
+        return Card(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      fmt.format(mostRecent.startedAt),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w600, fontSize: 14),
+                    ),
+                    if (mostRecent.durationMinutes > 0)
+                      Text(
+                        '${mostRecent.durationMinutes} min',
+                        style: TextStyle(
+                            color: AppColors.textSecondary, fontSize: 12),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                if (mostRecent.report != null)
+                  Text(
+                    mostRecent.report!.summary,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontSize: 13, height: 1.5),
+                  )
+                else
+                  Text(
+                    'Report generating...',
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 13),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
