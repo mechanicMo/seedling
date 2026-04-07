@@ -27,6 +27,10 @@ class AppConstants {
     'routines', 'feeding', 'transitions', 'relationships',
   ];
 
+  static const List<String> parentGuideCategories = [
+    'behavior', 'sleep', 'emotions', 'development', 'routines',
+  ];
+
   // Activity types
   static const List<String> allActivityTypes = [
     'story', 'game', 'music', 'movement', 'video', 'creative',

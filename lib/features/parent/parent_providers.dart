@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:seedling/features/auth/auth_providers.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
 import 'package:seedling/services/firestore_service.dart';
@@ -48,6 +49,18 @@ final situationCategoriesProvider = Provider<List<SituationCategory>>((ref) {
     const SituationCategory(label: 'Potty Training', tags: ['potty', 'toilet', 'training']),
     const SituationCategory(label: 'Something Else', tags: []),
   ];
+});
+
+final childSessionsProvider =
+    StreamProvider.autoDispose<List<ChildSession>>((ref) {
+  final firestoreService = ref.watch(firestoreServiceProvider);
+  final activeChild = ref.watch(activeChildProfileProvider);
+  final authAsync = ref.watch(authStateProvider);
+  final userId = authAsync.valueOrNull?.uid;
+
+  if (userId == null || activeChild == null) return Stream.value([]);
+
+  return firestoreService.childSessionsStream(userId, activeChild.id);
 });
 
 class SituationCategory {

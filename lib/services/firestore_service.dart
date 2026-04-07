@@ -82,4 +82,22 @@ class FirestoreService {
     if (!doc.exists) return null;
     return ParentGuideDoc.fromFirestore(doc);
   }
+
+  // ── Child Sessions ────────────────────────────────────────────────────────
+
+  /// Real-time stream of child sessions, newest first.
+  Stream<List<ChildSession>> childSessionsStream(
+      String userId, String childId) {
+    return _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection(AppConstants.childrenCollection)
+        .doc(childId)
+        .collection(AppConstants.sessionsCollection)
+        .orderBy('started_at', descending: true)
+        .limit(20)
+        .snapshots()
+        .map((snap) =>
+            snap.docs.map(ChildSession.fromFirestore).toList());
+  }
 }
