@@ -1,0 +1,29 @@
+{
+  "functions": {
+    "source": "firebase/functions",
+    "predeploy": ["npm --prefix \"$RESOURCE_DIR\" run build"]
+  },
+  "firestore": {
+    "rules": "firebase/firestore.rules",
+    "indexes": "firebase/firestore.indexes.json"
+  },
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "seedling-5a9f6",
+          "appId": "1:705524118472:android:75082e988b62b0b02ec6fd",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "seedling-5a9f6",
+          "configurations": {
+            "android": "1:705524118472:android:75082e988b62b0b02ec6fd"
+          }
+        }
+      }
+    }
+  }
+}
