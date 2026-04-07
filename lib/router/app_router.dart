@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seedling/features/auth/auth_providers.dart';
-// Screen imports will be added in Tasks 8-12
-// import 'package:seedling/features/auth/login_screen.dart';
-// import 'package:seedling/features/auth/signup_screen.dart';
-// import 'package:seedling/features/dashboard/dashboard_screen.dart';
-// import 'package:seedling/features/onboarding/onboarding_screen.dart';
-// import 'package:seedling/features/profiles/add_edit_profile_screen.dart';
-// import 'package:seedling/features/profiles/profiles_screen.dart';
+import 'package:seedling/features/auth/login_screen.dart';
+import 'package:seedling/features/auth/signup_screen.dart';
+import 'package:seedling/features/dashboard/dashboard_screen.dart';
+import 'package:seedling/features/onboarding/onboarding_screen.dart';
+import 'package:seedling/features/profiles/add_edit_profile_screen.dart';
+import 'package:seedling/features/profiles/profiles_screen.dart';
 import 'package:seedling/services/firestore_service.dart';
 
 /// Bridges a Stream into a ChangeNotifier so go_router re-runs redirect
@@ -62,44 +61,38 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      // TODO: Uncomment when LoginScreen is implemented (Task 8)
-      // GoRoute(
-      //   path: '/login',
-      //   builder: (_, __) => const LoginScreen(),
-      // ),
-      // TODO: Uncomment when SignupScreen is implemented (Task 8)
-      // GoRoute(
-      //   path: '/signup',
-      //   builder: (_, __) => const SignupScreen(),
-      // ),
-      // TODO: Uncomment when OnboardingScreen is implemented (Task 9)
-      // GoRoute(
-      //   path: '/onboarding',
-      //   builder: (_, __) => const OnboardingScreen(),
-      // ),
-      // TODO: Uncomment when DashboardScreen is implemented (Task 10)
-      // GoRoute(
-      //   path: '/',
-      //   builder: (_, __) => const DashboardScreen(),
-      //   routes: [
-      //     // TODO: Uncomment when ProfilesScreen is implemented (Task 11)
-      //     // GoRoute(
-      //     //   path: 'profiles',
-      //     //   builder: (_, __) => const ProfilesScreen(),
-      //     // ),
-      //     // TODO: Uncomment when AddEditProfileScreen is implemented (Task 12)
-      //     // GoRoute(
-      //     //   path: 'profiles/add',
-      //     //   builder: (_, __) => const AddEditProfileScreen(),
-      //     // ),
-      //     // GoRoute(
-      //     //   path: 'profiles/edit/:childId',
-      //     //   builder: (context, state) => AddEditProfileScreen(
-      //     //     childId: state.pathParameters['childId'],
-      //     //   ),
-      //     // ),
-      //   ],
-      // ),
+      GoRoute(
+        path: '/login',
+        builder: (_, __) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/signup',
+        builder: (_, __) => const SignupScreen(),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        builder: (_, __) => const OnboardingScreen(),
+      ),
+      GoRoute(
+        path: '/',
+        builder: (_, __) => const DashboardScreen(),
+        routes: [
+          GoRoute(
+            path: 'profiles',
+            builder: (_, __) => const ProfilesScreen(),
+          ),
+          GoRoute(
+            path: 'profiles/add',
+            builder: (_, __) => const AddEditProfileScreen(),
+          ),
+          GoRoute(
+            path: 'profiles/edit/:childId',
+            builder: (context, state) => AddEditProfileScreen(
+              childId: state.pathParameters['childId'],
+            ),
+          ),
+        ],
+      ),
     ],
   );
 });

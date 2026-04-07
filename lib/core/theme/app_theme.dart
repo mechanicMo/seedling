@@ -6,6 +6,7 @@ class AppColors {
   static const Color seedGreenLight = Color(0xFF7AB87A);  // light variant
   static const Color warmCream = Color(0xFFFAF7F0);       // background
   static const Color softAmber = Color(0xFFE8C99A);       // accent
+  static const Color softBrown = Color(0xFFA68D7D);       // alternative accent
   static const Color skyBlue = Color(0xFF87CEEB);         // child mode accent
   static const Color textPrimary = Color(0xFF2D2D2D);
   static const Color textSecondary = Color(0xFF757575);
