@@ -55,7 +55,7 @@ class ChildHomeScreen extends ConsumerWidget {
                         crossAxisCount: 2,
                         crossAxisSpacing: 16,
                         mainAxisSpacing: 16,
-                        childAspectRatio: 1.1,
+                        childAspectRatio: 0.95,
                       ),
                       itemCount: activities.length,
                       itemBuilder: (context, index) =>
@@ -87,13 +87,22 @@ class _ActivityCard extends StatelessWidget {
   const _ActivityCard({required this.activity});
   final ChildActivity activity;
 
-  static const _typeIcons = {
-    'story': Icons.auto_stories_outlined,
-    'game': Icons.sports_esports_outlined,
-    'music': Icons.music_note_outlined,
-    'movement': Icons.directions_walk_outlined,
-    'video': Icons.play_circle_outline,
-    'creative': Icons.brush_outlined,
+  static const _typeEmojis = {
+    'story': '📖',
+    'game': '🎮',
+    'music': '🎵',
+    'movement': '🏃',
+    'video': '🎬',
+    'creative': '🎨',
+  };
+
+  static const _typeLabels = {
+    'story': 'Story',
+    'game': 'Game',
+    'music': 'Music',
+    'movement': 'Move',
+    'video': 'Video',
+    'creative': 'Create',
   };
 
   static const _typeColors = {
@@ -107,7 +116,8 @@ class _ActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final icon = _typeIcons[activity.type] ?? Icons.star_outline;
+    final emoji = _typeEmojis[activity.type] ?? '⭐';
+    final label = _typeLabels[activity.type] ?? 'Activity';
     final color = _typeColors[activity.type] ?? AppColors.seedGreen;
 
     return InkWell(
@@ -125,8 +135,11 @@ class _ActivityCard extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 48, color: color),
-            const SizedBox(height: 10),
+            Text(
+              emoji,
+              style: const TextStyle(fontSize: 40),
+            ),
+            const SizedBox(height: 12),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Text(
@@ -141,11 +154,21 @@ class _ActivityCard extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              '${activity.durationMinutes} min',
-              style: TextStyle(
-                  fontSize: 12, color: AppColors.textSecondary),
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '${activity.durationMinutes} min · $label',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                ),
+              ),
             ),
           ],
         ),
