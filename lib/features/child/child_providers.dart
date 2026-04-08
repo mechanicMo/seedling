@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
-import 'package:seedling/services/firestore_service.dart';
 
 /// Available activities for the active child's age range and content selection.
 final childActivitiesProvider =
@@ -77,9 +76,7 @@ class CompletedActivityEntry {
 }
 
 class ChildSessionNotifier extends StateNotifier<ChildSessionState> {
-  ChildSessionNotifier(this._ref) : super(const ChildSessionState());
-
-  final Ref _ref;
+  ChildSessionNotifier() : super(const ChildSessionState());
 
   void setSessionId(String id) {
     state = state.copyWith(sessionId: id);
@@ -114,5 +111,5 @@ class ChildSessionNotifier extends StateNotifier<ChildSessionState> {
 
 final childSessionProvider =
     StateNotifierProvider.autoDispose<ChildSessionNotifier, ChildSessionState>(
-  (ref) => ChildSessionNotifier(ref),
+  (ref) => ChildSessionNotifier(),
 );
