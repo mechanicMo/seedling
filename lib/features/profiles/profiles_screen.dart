@@ -96,7 +96,9 @@ class _ProfileTile extends ConsumerWidget {
         subtitle: Text(_ageRangeLabel(profile.ageRange)),
         trailing: PopupMenuButton<String>(
           onSelected: (value) async {
-            if (value == 'edit') {
+            if (value == 'settings') {
+              context.push('/profiles/settings/${profile.id}');
+            } else if (value == 'edit') {
               context.push('/profiles/edit/${profile.id}');
             } else if (value == 'delete') {
               final confirm = await showDialog<bool>(
@@ -124,6 +126,7 @@ class _ProfileTile extends ConsumerWidget {
             }
           },
           itemBuilder: (_) => [
+            const PopupMenuItem(value: 'settings', child: Text('Settings')),
             const PopupMenuItem(value: 'edit', child: Text('Edit')),
             const PopupMenuItem(
                 value: 'delete',
