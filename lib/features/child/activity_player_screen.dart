@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seedling/core/theme/app_theme.dart';
 import 'package:seedling/features/child/child_providers.dart';
+import 'package:seedling/features/child/widgets/audio_player_widget.dart';
 import 'package:seedling/features/child/widgets/session_timer_bar.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
@@ -17,6 +18,12 @@ class ActivityPlayerScreen extends ConsumerStatefulWidget {
 
 class _ActivityPlayerScreenState extends ConsumerState<ActivityPlayerScreen> {
   final _stopwatch = Stopwatch();
+
+  bool get _hasAudio {
+    final type = widget.activity.type;
+    return (type == 'story' || type == 'music') &&
+        widget.activity.mediaRefs.isNotEmpty;
+  }
 
   @override
   void initState() {
@@ -68,7 +75,7 @@ class _ActivityPlayerScreenState extends ConsumerState<ActivityPlayerScreen> {
                           fontWeight: FontWeight.w800,
                         ),
                       ),
-                      if (activity.learningObjectives.isNotEmpty) ...[
+                      if (!_hasAudio && activity.learningObjectives.isNotEmpty) ...[
                         const SizedBox(height: 12),
                         Text(
                           activity.learningObjectives.first,
@@ -81,27 +88,33 @@ class _ActivityPlayerScreenState extends ConsumerState<ActivityPlayerScreen> {
                         ),
                       ],
                       const SizedBox(height: 48),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 64,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.seedGreen,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+                      if (_hasAudio)
+                        AudioPlayerWidget(
+                          audioUrl: activity.mediaRefs.first,
+                          onComplete: _markDone,
+                        )
+                      else
+                        SizedBox(
+                          width: double.infinity,
+                          height: 64,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.seedGreen,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
                             ),
-                          ),
-                          onPressed: _markDone,
-                          child: const Text(
-                            'All done!',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
+                            onPressed: _markDone,
+                            child: const Text(
+                              'All done!',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
                           ),
                         ),
-                      ),
                     ],
                   ),
                 ),
