@@ -4,7 +4,6 @@ import 'package:seedling/features/parent/ai_chat_notifier.dart';
 import 'package:seedling/features/account/account_providers.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/child_profile.dart';
-import 'package:seedling/models/child_activity.dart';
 
 ChildProfile _fakeProfile() => ChildProfile(
   id: 'c1',
