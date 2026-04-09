@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:seedling/core/constants/app_constants.dart';
 import 'package:seedling/core/theme/app_theme.dart';
+import 'package:seedling/features/account/account_providers.dart';
 import 'package:seedling/features/parent/parent_providers.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
@@ -13,6 +16,7 @@ class SessionReportsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final activeChild = ref.watch(activeChildProfileProvider);
     final sessionsAsync = ref.watch(childSessionsProvider);
+    final statusAsync = ref.watch(subscriptionStatusProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -54,14 +58,62 @@ class SessionReportsScreen extends ConsumerWidget {
             );
           }
 
-          return ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemCount: sessions.length,
-            separatorBuilder: (_, __) => const SizedBox(height: 8),
-            itemBuilder: (context, index) =>
-                _SessionCard(session: sessions[index]),
+          final status = statusAsync.valueOrNull;
+          final isLocked = status != null &&
+              !status.isPaid &&
+              !status.canViewSessionReports;
+
+          return Column(
+            children: [
+              if (isLocked)
+                _UpgradeBanner(
+                  message:
+                      'You\'ve viewed ${AppConstants.freeSessionReportsPerMonth} reports this month. '
+                      'Upgrade for unlimited access.',
+                  onUpgrade: () => context.push('/account'),
+                ),
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: sessions.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) =>
+                      _SessionCard(session: sessions[index]),
+                ),
+              ),
+            ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _UpgradeBanner extends StatelessWidget {
+  const _UpgradeBanner({required this.message, required this.onUpgrade});
+  final String message;
+  final VoidCallback onUpgrade;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      color: AppColors.softAmber.withValues(alpha: 0.3),
+      child: Row(
+        children: [
+          const Icon(Icons.lock_outline, size: 18, color: AppColors.textPrimary),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(message,
+                style: const TextStyle(fontSize: 12, height: 1.4)),
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            onPressed: onUpgrade,
+            child: const Text('Upgrade'),
+          ),
+        ],
       ),
     );
   }

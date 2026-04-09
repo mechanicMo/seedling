@@ -1,8 +1,12 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:seedling/core/constants/app_constants.dart';
+import 'package:seedling/features/account/account_providers.dart';
+import 'package:seedling/features/auth/auth_providers.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
 import 'package:seedling/services/ai_service.dart';
+import 'package:seedling/services/firestore_service.dart';
 
 class AiChatState {
   const AiChatState({
@@ -41,6 +45,16 @@ class AiChatNotifier extends StateNotifier<AiChatState> {
     final activeChild = _ref.read(activeChildProfileProvider);
     if (activeChild == null) return;
 
+    // Check AI query limit
+    final status = await _ref.read(subscriptionStatusProvider.future);
+    if (!status.canSendAiMessage) {
+      state = state.copyWith(
+        error: 'You\'ve reached your daily limit of ${AppConstants.freeAiQueriesPerDay} AI queries. Upgrade to Premium for unlimited guidance.',
+        isLoading: false,
+      );
+      return;
+    }
+
     // Optimistically add user message
     state = state.copyWith(
       messages: [
@@ -70,6 +84,13 @@ class AiChatNotifier extends StateNotifier<AiChatState> {
         isLoading: false,
         sessionId: result.sessionId,
       );
+
+      // Increment usage counter
+      final authAsync = _ref.read(authStateProvider);
+      final userId = authAsync.valueOrNull?.uid;
+      if (userId != null) {
+        await _ref.read(firestoreServiceProvider).incrementAiQueryUsage(userId);
+      }
     } on FirebaseFunctionsException catch (e) {
       state = state.copyWith(
         isLoading: false,
