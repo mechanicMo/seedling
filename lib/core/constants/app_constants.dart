@@ -38,4 +38,8 @@ class AppConstants {
 
   // v1 activity types (subset available at launch)
   static const List<String> v1ActivityTypes = ['story', 'game', 'music'];
+
+  // Subscription
+  static const String stripeCheckoutUrl =
+      'https://buy.stripe.com/placeholder'; // replace with real URL before launch
 }
