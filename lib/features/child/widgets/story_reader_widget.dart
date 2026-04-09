@@ -144,7 +144,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
   }
 
   Future<void> _resumePlayback() async {
-    await _flutterTts.setProgressHandler(
+    _flutterTts.setProgressHandler(
       (String text, int startChar, int endChar, String word) {
         if (mounted) {
           setState(() {
@@ -210,7 +210,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppColors.softAmber.withOpacity(0.4),
+                  color: AppColors.softAmber.withValues(alpha: 0.4),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -235,7 +235,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
               fontSize: 26,
               height: 2.0,
               fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary.withOpacity(0.6),
+              color: AppColors.textPrimary.withValues(alpha: 0.6),
             ),
           ),
         );
@@ -377,7 +377,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
                     shape: BoxShape.circle,
                     color: _currentPage == index
                         ? AppColors.seedGreen
-                        : AppColors.seedGreen.withOpacity(0.3),
+                        : AppColors.seedGreen.withValues(alpha: 0.3),
                   ),
                 ),
               ),
