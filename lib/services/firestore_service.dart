@@ -117,6 +117,30 @@ class FirestoreService {
         .set({'session_reports': FieldValue.increment(1)}, SetOptions(merge: true));
   }
 
+  /// Streams AI queries used today for [userId]. Emits 0 if no record exists.
+  Stream<int> aiQueriesUsedTodayStream(String userId) {
+    final today = _todayKey();
+    return _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection('daily_usage')
+        .doc(today)
+        .snapshots()
+        .map((doc) => (doc.data()?['ai_queries'] as int?) ?? 0);
+  }
+
+  /// Streams session reports used this calendar month for [userId]. Emits 0 if no record exists.
+  Stream<int> sessionReportsUsedThisMonthStream(String userId) {
+    final month = _monthKey();
+    return _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection('monthly_usage')
+        .doc(month)
+        .snapshots()
+        .map((doc) => (doc.data()?['session_reports'] as int?) ?? 0);
+  }
+
   String _todayKey() {
     final now = DateTime.now();
     return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';

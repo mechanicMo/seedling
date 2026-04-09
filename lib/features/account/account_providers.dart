@@ -23,20 +23,20 @@ final isPaidProvider = FutureProvider<bool>((ref) async {
 
 // ── Usage counts ─────────────────────────────────────────────────────────────
 
-/// AI queries used today. Returns 0 if not signed in.
-final aiQueriesUsedTodayProvider = FutureProvider<int>((ref) async {
+/// Streams AI queries used today. Emits 0 if not signed in.
+final aiQueriesUsedTodayProvider = StreamProvider<int>((ref) {
   final authAsync = ref.watch(authStateProvider);
   final userId = authAsync.valueOrNull?.uid;
-  if (userId == null) return 0;
-  return ref.watch(firestoreServiceProvider).getAiQueriesUsedToday(userId);
+  if (userId == null) return Stream.value(0);
+  return ref.watch(firestoreServiceProvider).aiQueriesUsedTodayStream(userId);
 });
 
-/// Session reports used this calendar month. Returns 0 if not signed in.
-final sessionReportsUsedThisMonthProvider = FutureProvider<int>((ref) async {
+/// Streams session reports used this calendar month. Emits 0 if not signed in.
+final sessionReportsUsedThisMonthProvider = StreamProvider<int>((ref) {
   final authAsync = ref.watch(authStateProvider);
   final userId = authAsync.valueOrNull?.uid;
-  if (userId == null) return 0;
-  return ref.watch(firestoreServiceProvider).getSessionReportsUsedThisMonth(userId);
+  if (userId == null) return Stream.value(0);
+  return ref.watch(firestoreServiceProvider).sessionReportsUsedThisMonthStream(userId);
 });
 
 /// Number of child profiles currently created.
@@ -66,9 +66,14 @@ class SubscriptionStatus {
 }
 
 final subscriptionStatusProvider = FutureProvider<SubscriptionStatus>((ref) async {
+  // The streams are watched here; any update to usage counts will trigger a rebuild
+  final aiUsedAsync = ref.watch(aiQueriesUsedTodayProvider);
+  final reportsUsedAsync = ref.watch(sessionReportsUsedThisMonthProvider);
+
+  final aiUsed = aiUsedAsync.valueOrNull ?? 0;
+  final reportsUsed = reportsUsedAsync.valueOrNull ?? 0;
+
   final isPaid = await ref.watch(isPaidProvider.future);
-  final aiUsed = await ref.watch(aiQueriesUsedTodayProvider.future);
-  final reportsUsed = await ref.watch(sessionReportsUsedThisMonthProvider.future);
   final profileCount = await ref.watch(childProfileCountProvider.future);
 
   if (isPaid) {
