@@ -36,6 +36,11 @@ class MainShell extends StatelessWidget {
             selectedIcon: Icon(Icons.bar_chart),
             label: 'Reports',
           ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person),
+            label: 'Account',
+          ),
         ],
         backgroundColor: AppColors.surface,
         indicatorColor: AppColors.seedGreenLight.withOpacity(0.3),

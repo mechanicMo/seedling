@@ -18,6 +18,7 @@ import 'package:seedling/features/child/child_home_screen.dart';
 import 'package:seedling/features/child/session_complete_screen.dart';
 import 'package:seedling/features/profiles/add_edit_profile_screen.dart';
 import 'package:seedling/features/profiles/profiles_screen.dart';
+import 'package:seedling/features/account/account_screen.dart';
 import 'package:seedling/features/profiles/child_settings_screen.dart';
 import 'package:seedling/models/models.dart';
 import 'package:seedling/services/firestore_service.dart';
@@ -164,6 +165,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             GoRoute(
               path: '/reports',
               builder: (_, __) => const SessionReportsScreen(),
+            ),
+          ]),
+
+          // Tab 4: Account
+          StatefulShellBranch(routes: [
+            GoRoute(
+              path: '/account',
+              builder: (_, __) => const AccountScreen(),
             ),
           ]),
         ],

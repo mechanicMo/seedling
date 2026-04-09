@@ -33,6 +33,9 @@ dependencies:
   # Audio Playback
   just_audio: ^0.9.40
 
+  # URL launching
+  url_launcher: ^6.3.0
+
   # Models
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
