@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seedling/core/constants/app_constants.dart';
 import 'package:seedling/core/theme/app_theme.dart';
+import 'package:seedling/features/account/account_providers.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/child_profile.dart';
 
@@ -12,6 +13,7 @@ class ProfilesScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profilesAsync = ref.watch(childProfilesProvider);
+    final statusAsync = ref.watch(subscriptionStatusProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -19,7 +21,14 @@ class ProfilesScreen extends ConsumerWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            onPressed: () => context.push('/profiles/add'),
+            onPressed: () {
+              final status = statusAsync.valueOrNull;
+              if (status != null && !status.canAddChild) {
+                _showProfileLimitDialog(context);
+              } else {
+                context.push('/profiles/add');
+              }
+            },
           ),
         ],
       ),
@@ -57,10 +66,43 @@ class ProfilesScreen extends ConsumerWidget {
       ),
       floatingActionButton: profilesAsync.valueOrNull?.isNotEmpty == true
           ? FloatingActionButton(
-              onPressed: () => context.push('/profiles/add'),
+              onPressed: () {
+                final status = statusAsync.valueOrNull;
+                if (status != null && !status.canAddChild) {
+                  _showProfileLimitDialog(context);
+                } else {
+                  context.push('/profiles/add');
+                }
+              },
               child: const Icon(Icons.add),
             )
           : null,
+    );
+  }
+
+  void _showProfileLimitDialog(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Child profile limit reached'),
+        content: Text(
+          'Free accounts can have up to ${AppConstants.freeChildProfileLimit} child profiles. '
+          'Upgrade to Premium for unlimited profiles.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Not now'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.push('/account');
+            },
+            child: const Text('Upgrade'),
+          ),
+        ],
+      ),
     );
   }
 }
