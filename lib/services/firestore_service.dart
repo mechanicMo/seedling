@@ -60,6 +60,73 @@ class FirestoreService {
     return AppUser.fromFirestore(doc);
   }
 
+  /// Real-time stream of the parent user document.
+  Stream<AppUser?> userDocStream(String userId) {
+    return _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .snapshots()
+        .map((doc) => doc.exists ? AppUser.fromFirestore(doc) : null);
+  }
+
+  /// Returns AI queries used today for [userId]. Returns 0 if no record exists.
+  Future<int> getAiQueriesUsedToday(String userId) async {
+    final today = _todayKey();
+    final doc = await _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection('daily_usage')
+        .doc(today)
+        .get();
+    if (!doc.exists) return 0;
+    return (doc.data()?['ai_queries'] as int?) ?? 0;
+  }
+
+  /// Increments today's AI query count by 1.
+  Future<void> incrementAiQueryUsage(String userId) async {
+    final today = _todayKey();
+    await _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection('daily_usage')
+        .doc(today)
+        .set({'ai_queries': FieldValue.increment(1)}, SetOptions(merge: true));
+  }
+
+  /// Returns session reports used this calendar month for [userId].
+  Future<int> getSessionReportsUsedThisMonth(String userId) async {
+    final month = _monthKey();
+    final doc = await _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection('monthly_usage')
+        .doc(month)
+        .get();
+    if (!doc.exists) return 0;
+    return (doc.data()?['session_reports'] as int?) ?? 0;
+  }
+
+  /// Increments this month's session report count by 1.
+  Future<void> incrementSessionReportUsage(String userId) async {
+    final month = _monthKey();
+    await _db
+        .collection(AppConstants.usersCollection)
+        .doc(userId)
+        .collection('monthly_usage')
+        .doc(month)
+        .set({'session_reports': FieldValue.increment(1)}, SetOptions(merge: true));
+  }
+
+  String _todayKey() {
+    final now = DateTime.now();
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+  }
+
+  String _monthKey() {
+    final now = DateTime.now();
+    return '${now.year}-${now.month.toString().padLeft(2, '0')}';
+  }
+
   // ── Parent Guides ────────────────────────────────────────────────────────────
 
   /// Fetches all published ParentGuides for a given age range.
