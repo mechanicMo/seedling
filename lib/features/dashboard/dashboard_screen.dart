@@ -8,7 +8,6 @@ import 'package:seedling/features/child/child_providers.dart';
 import 'package:seedling/features/parent/parent_providers.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
-import 'package:seedling/services/firestore_service.dart';
 
 class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
@@ -26,12 +25,6 @@ class DashboardScreen extends ConsumerWidget {
             icon: const Icon(Icons.people_outline),
             onPressed: () => context.push('/profiles'),
             tooltip: 'Manage children',
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () =>
-                ref.read(authNotifierProvider.notifier).signOut(),
-            tooltip: 'Sign out',
           ),
         ],
       ),
