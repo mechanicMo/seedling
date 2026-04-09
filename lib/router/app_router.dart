@@ -23,6 +23,10 @@ import 'package:seedling/features/profiles/child_settings_screen.dart';
 import 'package:seedling/models/models.dart';
 import 'package:seedling/services/firestore_service.dart';
 
+/// Set to true when the user taps "Do this later" on onboarding.
+/// Prevents the router from re-redirecting them until they sign out.
+final onboardingSkippedProvider = StateProvider<bool>((ref) => false);
+
 class _GoRouterRefreshStream extends ChangeNotifier {
   _GoRouterRefreshStream(Stream<dynamic> stream) {
     notifyListeners();
@@ -40,6 +44,7 @@ class _GoRouterRefreshStream extends ChangeNotifier {
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
+  final onboardingSkipped = ref.watch(onboardingSkippedProvider);
   final firestoreService = FirestoreService();
 
   return GoRouter(
@@ -62,6 +67,13 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       }
 
       if (isLoggedIn && isOnOnboarding) return null;
+
+      // On dashboard load, catch returning users who have no profiles yet
+      // (skip if user already dismissed onboarding this session)
+      if (isLoggedIn && !onboardingSkipped && state.matchedLocation == '/') {
+        final hasProfiles = await firestoreService.hasChildProfiles(user.uid);
+        if (!hasProfiles) return '/onboarding';
+      }
 
       return null;
     },

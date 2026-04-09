@@ -6,6 +6,7 @@ import 'package:seedling/core/constants/app_constants.dart';
 import 'package:seedling/core/theme/app_theme.dart';
 import 'package:seedling/features/account/account_providers.dart';
 import 'package:seedling/features/parent/parent_providers.dart';
+import 'package:seedling/features/profiles/child_switcher_modal.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
 
@@ -20,9 +21,24 @@ class SessionReportsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(activeChild != null
-            ? '${activeChild.name}\'s Sessions'
-            : 'Session Reports'),
+        title: activeChild != null
+            ? Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ChildSwitcherButton(
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.seedGreen,
+                    ),
+                  ),
+                  const Text(
+                    "'s Sessions",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  ),
+                ],
+              )
+            : const Text('Session Reports'),
       ),
       body: sessionsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
@@ -119,6 +135,14 @@ class _UpgradeBanner extends StatelessWidget {
   }
 }
 
+String _formatSkill(String raw) {
+  return raw
+      .replaceAll('_', ' ')
+      .split(' ')
+      .map((w) => w.isEmpty ? '' : '${w[0].toUpperCase()}${w.substring(1)}')
+      .join(' ');
+}
+
 class _SessionCard extends StatelessWidget {
   const _SessionCard({required this.session});
   final ChildSession session;
@@ -171,7 +195,7 @@ class _SessionCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Text(
-                          skill,
+                          _formatSkill(skill),
                           style: TextStyle(
                               fontSize: 12, color: AppColors.skyBlue),
                         ),
@@ -213,7 +237,9 @@ class _SessionCard extends StatelessWidget {
             ] else ...[
               const SizedBox(height: 6),
               Text(
-                'Session completed — report generating...',
+                session.activityIds.isEmpty
+                    ? 'No activities completed this session.'
+                    : 'Report generating...',
                 style: TextStyle(
                     color: AppColors.textSecondary, fontSize: 13),
               ),
