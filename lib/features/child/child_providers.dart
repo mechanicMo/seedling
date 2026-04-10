@@ -110,6 +110,6 @@ class ChildSessionNotifier extends StateNotifier<ChildSessionState> {
 }
 
 final childSessionProvider =
-    StateNotifierProvider.autoDispose<ChildSessionNotifier, ChildSessionState>(
+    StateNotifierProvider<ChildSessionNotifier, ChildSessionState>(
   (ref) => ChildSessionNotifier(),
 );
