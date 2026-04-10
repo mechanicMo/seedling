@@ -245,7 +245,11 @@ class _RecentSessionPreview extends ConsumerWidget {
           );
         }
 
-        final mostRecent = sessions.first;
+        // Show most recent session that has a completed report
+        final sessionWithReport = sessions.firstWhere(
+          (s) => s.report != null,
+          orElse: () => sessions.first,
+        );
         final fmt = DateFormat('MMM d, h:mm a');
 
         return Card(
@@ -258,29 +262,29 @@ class _RecentSessionPreview extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      fmt.format(mostRecent.startedAt),
+                      fmt.format(sessionWithReport.startedAt),
                       style: const TextStyle(
                           fontWeight: FontWeight.w600, fontSize: 14),
                     ),
-                    if (mostRecent.durationMinutes > 0)
+                    if (sessionWithReport.durationMinutes > 0)
                       Text(
-                        '${mostRecent.durationMinutes} min',
+                        '${sessionWithReport.durationMinutes} min',
                         style: TextStyle(
                             color: AppColors.textSecondary, fontSize: 12),
                       ),
                   ],
                 ),
                 const SizedBox(height: 8),
-                if (mostRecent.report != null)
+                if (sessionWithReport.report != null)
                   Text(
-                    mostRecent.report!.summary,
+                    sessionWithReport.report!.summary,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 13, height: 1.5),
                   )
                 else
                   Text(
-                    'Report generating...',
+                    'No reports yet',
                     style: TextStyle(
                         color: AppColors.textSecondary, fontSize: 13),
                   ),
