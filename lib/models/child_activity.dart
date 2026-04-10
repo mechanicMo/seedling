@@ -10,6 +10,8 @@ class ChildActivity with _$ChildActivity {
     required String id,
     required String title,
     required String type,         // story | game | music | movement | video | creative
+    @Default('story_pages') String contentType,  // story_pages | game_tap_match | game_memory | game_sequence | guided_steps
+    @Default({}) Map<String, dynamic> content,   // activity-specific content structure
     @Default([]) List<String> ageRanges,
     @Default(5) int durationMinutes,
     @Default([]) List<String> mediaRefs,
@@ -29,6 +31,8 @@ class ChildActivity with _$ChildActivity {
       id: doc.id,
       title: data['title'] as String? ?? '',
       type: data['type'] as String? ?? 'story',
+      contentType: data['content_type'] as String? ?? 'story_pages',
+      content: (data['content'] as Map<String, dynamic>?) ?? {},
       ageRanges: List<String>.from(data['age_ranges'] as List? ?? []),
       durationMinutes: data['duration_minutes'] as int? ?? 5,
       mediaRefs: List<String>.from(data['media_refs'] as List? ?? []),

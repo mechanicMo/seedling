@@ -11,6 +11,8 @@ _$ChildActivityImpl _$$ChildActivityImplFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       title: json['title'] as String,
       type: json['type'] as String,
+      contentType: json['contentType'] as String? ?? 'story_pages',
+      content: json['content'] as Map<String, dynamic>? ?? const {},
       ageRanges: (json['ageRanges'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
@@ -38,6 +40,8 @@ Map<String, dynamic> _$$ChildActivityImplToJson(_$ChildActivityImpl instance) =>
       'id': instance.id,
       'title': instance.title,
       'type': instance.type,
+      'contentType': instance.contentType,
+      'content': instance.content,
       'ageRanges': instance.ageRanges,
       'durationMinutes': instance.durationMinutes,
       'mediaRefs': instance.mediaRefs,

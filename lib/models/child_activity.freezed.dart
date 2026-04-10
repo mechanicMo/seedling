@@ -24,6 +24,10 @@ mixin _$ChildActivity {
   String get title => throw _privateConstructorUsedError;
   String get type =>
       throw _privateConstructorUsedError; // story | game | music | movement | video | creative
+  String get contentType =>
+      throw _privateConstructorUsedError; // story_pages | game_tap_match | game_memory | game_sequence | guided_steps
+  Map<String, dynamic> get content =>
+      throw _privateConstructorUsedError; // activity-specific content structure
   List<String> get ageRanges => throw _privateConstructorUsedError;
   int get durationMinutes => throw _privateConstructorUsedError;
   List<String> get mediaRefs => throw _privateConstructorUsedError;
@@ -53,6 +57,8 @@ abstract class $ChildActivityCopyWith<$Res> {
       {String id,
       String title,
       String type,
+      String contentType,
+      Map<String, dynamic> content,
       List<String> ageRanges,
       int durationMinutes,
       List<String> mediaRefs,
@@ -81,6 +87,8 @@ class _$ChildActivityCopyWithImpl<$Res, $Val extends ChildActivity>
     Object? id = null,
     Object? title = null,
     Object? type = null,
+    Object? contentType = null,
+    Object? content = null,
     Object? ageRanges = null,
     Object? durationMinutes = null,
     Object? mediaRefs = null,
@@ -103,6 +111,14 @@ class _$ChildActivityCopyWithImpl<$Res, $Val extends ChildActivity>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
+      contentType: null == contentType
+          ? _value.contentType
+          : contentType // ignore: cast_nullable_to_non_nullable
+              as String,
+      content: null == content
+          ? _value.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
       ageRanges: null == ageRanges
           ? _value.ageRanges
           : ageRanges // ignore: cast_nullable_to_non_nullable
@@ -151,6 +167,8 @@ abstract class _$$ChildActivityImplCopyWith<$Res>
       {String id,
       String title,
       String type,
+      String contentType,
+      Map<String, dynamic> content,
       List<String> ageRanges,
       int durationMinutes,
       List<String> mediaRefs,
@@ -177,6 +195,8 @@ class __$$ChildActivityImplCopyWithImpl<$Res>
     Object? id = null,
     Object? title = null,
     Object? type = null,
+    Object? contentType = null,
+    Object? content = null,
     Object? ageRanges = null,
     Object? durationMinutes = null,
     Object? mediaRefs = null,
@@ -199,6 +219,14 @@ class __$$ChildActivityImplCopyWithImpl<$Res>
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
               as String,
+      contentType: null == contentType
+          ? _value.contentType
+          : contentType // ignore: cast_nullable_to_non_nullable
+              as String,
+      content: null == content
+          ? _value._content
+          : content // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
       ageRanges: null == ageRanges
           ? _value._ageRanges
           : ageRanges // ignore: cast_nullable_to_non_nullable
@@ -242,6 +270,8 @@ class _$ChildActivityImpl implements _ChildActivity {
       {required this.id,
       required this.title,
       required this.type,
+      this.contentType = 'story_pages',
+      final Map<String, dynamic> content = const {},
       final List<String> ageRanges = const [],
       this.durationMinutes = 5,
       final List<String> mediaRefs = const [],
@@ -250,7 +280,8 @@ class _$ChildActivityImpl implements _ChildActivity {
       this.parentFollowUp = '',
       this.published = false,
       this.version = 1})
-      : _ageRanges = ageRanges,
+      : _content = content,
+        _ageRanges = ageRanges,
         _mediaRefs = mediaRefs,
         _skillsTargeted = skillsTargeted,
         _learningObjectives = learningObjectives;
@@ -265,8 +296,23 @@ class _$ChildActivityImpl implements _ChildActivity {
   @override
   final String type;
 // story | game | music | movement | video | creative
+  @override
+  @JsonKey()
+  final String contentType;
+// story_pages | game_tap_match | game_memory | game_sequence | guided_steps
+  final Map<String, dynamic> _content;
+// story_pages | game_tap_match | game_memory | game_sequence | guided_steps
+  @override
+  @JsonKey()
+  Map<String, dynamic> get content {
+    if (_content is EqualUnmodifiableMapView) return _content;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_content);
+  }
+
+// activity-specific content structure
   final List<String> _ageRanges;
-// story | game | music | movement | video | creative
+// activity-specific content structure
   @override
   @JsonKey()
   List<String> get ageRanges {
@@ -318,7 +364,7 @@ class _$ChildActivityImpl implements _ChildActivity {
 
   @override
   String toString() {
-    return 'ChildActivity(id: $id, title: $title, type: $type, ageRanges: $ageRanges, durationMinutes: $durationMinutes, mediaRefs: $mediaRefs, skillsTargeted: $skillsTargeted, learningObjectives: $learningObjectives, parentFollowUp: $parentFollowUp, published: $published, version: $version)';
+    return 'ChildActivity(id: $id, title: $title, type: $type, contentType: $contentType, content: $content, ageRanges: $ageRanges, durationMinutes: $durationMinutes, mediaRefs: $mediaRefs, skillsTargeted: $skillsTargeted, learningObjectives: $learningObjectives, parentFollowUp: $parentFollowUp, published: $published, version: $version)';
   }
 
   @override
@@ -329,6 +375,9 @@ class _$ChildActivityImpl implements _ChildActivity {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.type, type) || other.type == type) &&
+            (identical(other.contentType, contentType) ||
+                other.contentType == contentType) &&
+            const DeepCollectionEquality().equals(other._content, _content) &&
             const DeepCollectionEquality()
                 .equals(other._ageRanges, _ageRanges) &&
             (identical(other.durationMinutes, durationMinutes) ||
@@ -353,6 +402,8 @@ class _$ChildActivityImpl implements _ChildActivity {
       id,
       title,
       type,
+      contentType,
+      const DeepCollectionEquality().hash(_content),
       const DeepCollectionEquality().hash(_ageRanges),
       durationMinutes,
       const DeepCollectionEquality().hash(_mediaRefs),
@@ -383,6 +434,8 @@ abstract class _ChildActivity implements ChildActivity {
       {required final String id,
       required final String title,
       required final String type,
+      final String contentType,
+      final Map<String, dynamic> content,
       final List<String> ageRanges,
       final int durationMinutes,
       final List<String> mediaRefs,
@@ -401,6 +454,11 @@ abstract class _ChildActivity implements ChildActivity {
   String get title;
   @override
   String get type; // story | game | music | movement | video | creative
+  @override
+  String
+      get contentType; // story_pages | game_tap_match | game_memory | game_sequence | guided_steps
+  @override
+  Map<String, dynamic> get content; // activity-specific content structure
   @override
   List<String> get ageRanges;
   @override
