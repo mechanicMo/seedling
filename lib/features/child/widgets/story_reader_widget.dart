@@ -40,7 +40,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
 
     // Configure TTS
     await _flutterTts.setLanguage('en-US');
-    await _flutterTts.setSpeechRate(0.75);
+    await _flutterTts.setSpeechRate(0.5);
     await _flutterTts.setPitch(1.1);
 
     // Set up progress handler for word highlighting
@@ -174,32 +174,33 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
   }
 
   Widget _buildStoryText(String text) {
-    if (text.isEmpty) {
-      return const SizedBox.shrink();
-    }
+    if (text.isEmpty) return const SizedBox.shrink();
 
-    // Split into words
-    final words = text.split(RegExp(r'(\s+)'));
+    // allMatches gives us the exact start/end position of each word in the
+    // original string, so TTS character offsets map correctly.
+    final wordMatches = RegExp(r'\S+').allMatches(text).toList();
+    if (wordMatches.isEmpty) return const SizedBox.shrink();
+
     final textSpans = <InlineSpan>[];
-    int charIndex = 0;
 
-    for (final word in words) {
-      final wordStart = charIndex;
-      final wordEnd = charIndex + word.length;
+    for (int i = 0; i < wordMatches.length; i++) {
+      final match = wordMatches[i];
+      final word = match.group(0)!;
+      final wordStart = match.start;
+      final wordEnd = match.end;
 
+      // Overlap-based check — more forgiving than strict containment
       final isHighlighted = _highlightRange != null &&
-          _highlightRange!.start <= wordStart &&
-          wordEnd <= _highlightRange!.end;
+          wordStart < _highlightRange!.end &&
+          wordEnd > _highlightRange!.start;
 
-      final isAfterHighlight = _highlightRange != null && wordStart > _highlightRange!.end;
+      final isAfterHighlight = _highlightRange != null &&
+          wordStart >= _highlightRange!.end;
 
-      if (word.isEmpty) {
-        charIndex += word.length;
-        continue;
-      }
+      // Trailing space after every word except the last
+      final trailingSpace = i < wordMatches.length - 1 ? ' ' : '';
 
       if (isHighlighted) {
-        // Highlighted word: gold pill with padding
         textSpans.add(
           WidgetSpan(
             alignment: PlaceholderAlignment.middle,
@@ -218,7 +219,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
                   style: const TextStyle(
                     fontSize: 30,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFFF2C94C), // Gold
+                    color: Color(0xFFF2C94C),
                     height: 1.0,
                   ),
                 ),
@@ -226,42 +227,39 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
             ),
           ),
         );
+        // Space after highlighted word as a plain span
+        if (trailingSpace.isNotEmpty) {
+          textSpans.add(const TextSpan(
+            text: ' ',
+            style: TextStyle(fontSize: 26, height: 2.0),
+          ));
+        }
       } else if (isAfterHighlight) {
-        // After highlight: dimmed
-        textSpans.add(
-          TextSpan(
-            text: word,
-            style: TextStyle(
-              fontSize: 26,
-              height: 2.0,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary.withValues(alpha: 0.6),
-            ),
+        textSpans.add(TextSpan(
+          text: '$word$trailingSpace',
+          style: TextStyle(
+            fontSize: 26,
+            height: 2.0,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textPrimary.withValues(alpha: 0.6),
           ),
-        );
+        ));
       } else {
-        // Normal word
-        textSpans.add(
-          TextSpan(
-            text: word,
-            style: const TextStyle(
-              fontSize: 26,
-              height: 2.0,
-              fontWeight: FontWeight.w500,
-              color: AppColors.textPrimary,
-            ),
+        textSpans.add(TextSpan(
+          text: '$word$trailingSpace',
+          style: const TextStyle(
+            fontSize: 26,
+            height: 2.0,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textPrimary,
           ),
-        );
+        ));
       }
-
-      charIndex += word.length;
     }
 
     return RichText(
       textAlign: TextAlign.center,
-      text: TextSpan(
-        children: textSpans,
-      ),
+      text: TextSpan(children: textSpans),
     );
   }
 

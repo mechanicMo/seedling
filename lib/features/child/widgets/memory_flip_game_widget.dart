@@ -143,6 +143,7 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
               itemCount: _cards.length,
               itemBuilder: (context, index) => _MemoryCard(
                 card: _cards[index],
+                isFlipped: !_cards[index].isFront,
                 onTap: () => _onCardTap(index),
               ),
             ),
@@ -168,9 +169,10 @@ class _CardState {
 }
 
 class _MemoryCard extends StatefulWidget {
-  const _MemoryCard({required this.card, required this.onTap});
+  const _MemoryCard({required this.card, required this.isFlipped, required this.onTap});
 
   final _CardState card;
+  final bool isFlipped;
   final VoidCallback onTap;
 
   @override
@@ -193,11 +195,11 @@ class _MemoryCardState extends State<_MemoryCard>
   @override
   void didUpdateWidget(_MemoryCard oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.card.isFront != oldWidget.card.isFront) {
-      if (widget.card.isFront) {
-        _controller.reverse();
-      } else {
+    if (widget.isFlipped != oldWidget.isFlipped) {
+      if (widget.isFlipped) {
         _controller.forward();
+      } else {
+        _controller.reverse();
       }
     }
   }
