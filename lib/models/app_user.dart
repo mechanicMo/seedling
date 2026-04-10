@@ -19,13 +19,15 @@ class AppUser with _$AppUser {
 
   factory AppUser.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
-    return AppUser.fromJson({
-      ...data,
-      'id': doc.id,
-      // Firestore Timestamps need manual conversion
-      if (data['created_at'] is Timestamp)
-        'createdAt': (data['created_at'] as Timestamp).toDate().toIso8601String(),
-    });
+    return AppUser(
+      id: doc.id,
+      email: data['email'] as String? ?? '',
+      displayName: data['display_name'] as String? ?? '',
+      tier: data['tier'] as String? ?? 'free',
+      createdAt: data['created_at'] is Timestamp
+          ? (data['created_at'] as Timestamp).toDate()
+          : null,
+    );
   }
 }
 
