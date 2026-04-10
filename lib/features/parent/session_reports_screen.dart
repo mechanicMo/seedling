@@ -25,17 +25,12 @@ class SessionReportsScreen extends ConsumerWidget {
             ? Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  ChildSwitcherButton(
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.seedGreen,
-                    ),
-                  ),
                   const Text(
-                    "'s Sessions",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    'Sessions for: ',
+                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                   ),
+                  const SizedBox(width: 4),
+                  const ChildSwitcherButton(chipStyle: true),
                 ],
               )
             : const Text('Session Reports'),

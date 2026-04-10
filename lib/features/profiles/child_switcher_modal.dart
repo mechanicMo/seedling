@@ -112,15 +112,45 @@ class _ChildSwitcherSheet extends ConsumerWidget {
 }
 
 /// Tappable child name + chevron. Drop this wherever you need the switcher trigger.
+/// Set [chipStyle] to true to render as a filled green chip (like the home screen selector).
 class ChildSwitcherButton extends ConsumerWidget {
-  const ChildSwitcherButton({this.style, super.key});
+  const ChildSwitcherButton({this.style, this.chipStyle = false, super.key});
 
   final TextStyle? style;
+  final bool chipStyle;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final active = ref.watch(activeChildProfileProvider);
     if (active == null) return const SizedBox.shrink();
+
+    if (chipStyle) {
+      return GestureDetector(
+        onTap: () => showChildSwitcher(context),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: AppColors.seedGreen,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                active.name,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 2),
+              const Icon(Icons.expand_more, size: 16, color: Colors.white),
+            ],
+          ),
+        ),
+      );
+    }
 
     return GestureDetector(
       onTap: () => showChildSwitcher(context),

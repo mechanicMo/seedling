@@ -44,7 +44,7 @@ class _SituationGuideScreenState extends ConsumerState<SituationGuideScreen> {
             Padding(
               padding: const EdgeInsets.only(right: 16),
               child: Center(
-                child: ChildSwitcherButton(),
+                child: ChildSwitcherButton(chipStyle: true),
               ),
             ),
         ],

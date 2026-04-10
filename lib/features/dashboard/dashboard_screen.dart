@@ -39,7 +39,7 @@ class DashboardScreen extends ConsumerWidget {
               children: [
                 // Child profile selector
                 if (profiles.isNotEmpty) ...[
-                  Text('Viewing as',
+                  Text('Now learning with',
                       style: TextStyle(
                           color: AppColors.textSecondary, fontSize: 13)),
                   const SizedBox(height: 8),
