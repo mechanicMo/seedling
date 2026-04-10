@@ -46,3 +46,4 @@ app.*.map.json
 
 # local session state (not committed)
 SESSION.md
+lib/firebase_options.dart
