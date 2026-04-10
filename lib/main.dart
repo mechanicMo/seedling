@@ -7,8 +7,15 @@ import 'package:seedling/router/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    }
+  } catch (e) {
+    // Firebase may already be initialized on Android
+    if (!e.toString().contains('duplicate-app')) {
+      rethrow;
+    }
   }
   runApp(const ProviderScope(child: SeedlingApp()));
 }
