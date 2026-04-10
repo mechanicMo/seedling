@@ -40,7 +40,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
 
     // Configure TTS
     await _flutterTts.setLanguage('en-US');
-    await _flutterTts.setSpeechRate(0.5);
+    await _flutterTts.setSpeechRate(0.4);
     await _flutterTts.setPitch(1.1);
 
     // Set up progress handler for word highlighting
@@ -176,8 +176,6 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
   Widget _buildStoryText(String text) {
     if (text.isEmpty) return const SizedBox.shrink();
 
-    // allMatches gives us the exact start/end position of each word in the
-    // original string, so TTS character offsets map correctly.
     final wordMatches = RegExp(r'\S+').allMatches(text).toList();
     if (wordMatches.isEmpty) return const SizedBox.shrink();
 
@@ -189,7 +187,6 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
       final wordStart = match.start;
       final wordEnd = match.end;
 
-      // Overlap-based check — more forgiving than strict containment
       final isHighlighted = _highlightRange != null &&
           wordStart < _highlightRange!.end &&
           wordEnd > _highlightRange!.start;
@@ -197,43 +194,20 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
       final isAfterHighlight = _highlightRange != null &&
           wordStart >= _highlightRange!.end;
 
-      // Trailing space after every word except the last
       final trailingSpace = i < wordMatches.length - 1 ? ' ' : '';
 
+      // All words stay as TextSpan — no WidgetSpan — so layout never shifts
       if (isHighlighted) {
-        textSpans.add(
-          WidgetSpan(
-            alignment: PlaceholderAlignment.middle,
-            child: AnimatedScale(
-              scale: 1.15,
-              duration: const Duration(milliseconds: 80),
-              curve: Curves.easeOut,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.softAmber.withValues(alpha: 0.4),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  word,
-                  style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFFF2C94C),
-                    height: 1.0,
-                  ),
-                ),
-              ),
-            ),
+        textSpans.add(TextSpan(
+          text: '$word$trailingSpace',
+          style: TextStyle(
+            fontSize: 26,
+            height: 2.0,
+            fontWeight: FontWeight.w700,
+            color: const Color(0xFFF2C94C),
+            backgroundColor: AppColors.softAmber.withValues(alpha: 0.35),
           ),
-        );
-        // Space after highlighted word as a plain span
-        if (trailingSpace.isNotEmpty) {
-          textSpans.add(const TextSpan(
-            text: ' ',
-            style: TextStyle(fontSize: 26, height: 2.0),
-          ));
-        }
+        ));
       } else if (isAfterHighlight) {
         textSpans.add(TextSpan(
           text: '$word$trailingSpace',
@@ -241,7 +215,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
             fontSize: 26,
             height: 2.0,
             fontWeight: FontWeight.w500,
-            color: AppColors.textPrimary.withValues(alpha: 0.6),
+            color: AppColors.textPrimary.withValues(alpha: 0.5),
           ),
         ));
       } else {
@@ -315,16 +289,21 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
                           }
                         }
                       },
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            if (page['character'] != null) ...[
-                              _buildCharacter(page['character'], page['emotion']),
-                              const SizedBox(height: 24),
-                            ],
-                            _buildStoryText(page['text']),
-                          ],
+                      child: LayoutBuilder(
+                        builder: (context, constraints) => SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                if (page['character'] != null) ...[
+                                  _buildCharacter(page['character'], page['emotion']),
+                                  const SizedBox(height: 24),
+                                ],
+                                _buildStoryText(page['text']),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
