@@ -58,7 +58,13 @@ class _ActivityPlayerScreenState extends ConsumerState<ActivityPlayerScreen> {
     final activity = widget.activity;
     switch (activity.contentType) {
       case 'story_pages':
-        return StoryReaderWidget(content: activity.content, onDone: _markDone);
+        return StoryReaderWidget(
+          content: {
+            'id': activity.id,
+            ...activity.content,
+          },
+          onDone: _markDone,
+        );
       case 'game_tap_match':
         return TapMatchGameWidget(content: activity.content, onDone: _markDone);
       case 'game_memory':
