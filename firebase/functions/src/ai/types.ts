@@ -20,6 +20,7 @@ export interface ChildActivity {
   id: string;
   title: string;
   type: 'story' | 'game' | 'music' | 'movement' | 'video' | 'creative';
+  contentType?: 'story_pages' | 'game_tap_match' | 'game_sequence' | 'game_memory_flip' | 'guided_steps';
   age_ranges: string[];
   duration_minutes: number;
   media_refs: string[];
@@ -28,6 +29,7 @@ export interface ChildActivity {
   parent_follow_up: string;
   published: boolean;
   version: number;
+  content?: Record<string, any>;
 }
 
 export interface ChildProfileContext {
