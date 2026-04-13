@@ -29,7 +29,7 @@ MODEL_ID = "eleven_multilingual_v2"
 BASE_URL = "https://api.elevenlabs.io/v1/text-to-speech"
 OUTPUT_DIR = Path(__file__).parent.parent / "assets" / "audio" / "stories"
 
-# All 7 seeded stories — character and pages
+# All 11 seeded stories — character and pages
 STORIES = {
     "activity-big-world-little-hands": {
         "character": "sparks",
@@ -106,6 +106,50 @@ STORIES = {
             'But Zee was brave! "I can try new things!" Zee tasted the seaweed.',
             '"Mmm! It\'s crunchy! It\'s yummy! I like trying new things!" Zee was so happy!',
             "Zee learned: being brave enough to try something new can lead to wonderful surprises!",
+        ],
+    },
+    "activity-sparks-and-the-scary-storm": {
+        "character": "sparks",
+        "pages": [
+            "Sparks was building the BEST sandcastle ever! Tall towers, a moat, everything!",
+            'Dark clouds rolled in. The wind blew harder. "What\'s happening to the sky?"',
+            "BOOM! Thunder crashed so loud the ground shook! Sparks hid behind the sandcastle.",
+            'The rain washed the sandcastle away. "NO! That\'s not fair!" Sparks stomped and growled.',
+            'Mom sat with Sparks and listened to the rain. "Storms pass. So do big feelings."',
+            "When the sun came back, Sparks built a NEW sandcastle. Even better than before!",
+        ],
+    },
+    "activity-clover-s-rainy-day": {
+        "character": "clover",
+        "pages": [
+            'Today was PARK DAY! Clover packed a bag and waited by the door. "Let\'s go!"',
+            "But it was raining. A lot. No park today. Clover's tail drooped.",
+            '"It\'s not FAIR!" Clover barked. "The plan was the PARK! Rain ruined everything!"',
+            "A big BOOM of thunder shook the windows. Clover dove under the blanket.",
+            'Clover took a deep breath. "Maybe I can make a new plan for inside."',
+            "Clover built a blanket fort and read stories all day. New plans can be great plans!",
+        ],
+    },
+    "activity-zee-learns-to-ask-for-help": {
+        "character": "zee",
+        "pages": [
+            'Zee spotted something shiny deep inside a coral hole. "Ooh, what IS that?"',
+            "Zee pulled and squeezed with all eight tentacles. It wouldn't budge!",
+            '"I can\'t do it..." Zee\'s tentacles drooped. Maybe it was impossible.',
+            'Wait! Zee remembered a special sign \u2014 HELP! Zee signed to a passing fish. "Please?"',
+            'The fish wiggled it free \u2014 a beautiful pearl! "Thank you!" Zee signed back.',
+            "Zee learned something important: asking for help isn't giving up. It's being brave!",
+        ],
+    },
+    "activity-zee-gets-lost": {
+        "character": "zee",
+        "pages": [
+            "Zee swam faster and faster, exploring a new part of the reef. So many new things!",
+            "But wait... nothing looked familiar. Which way was home? Zee's tentacles curled up tight.",
+            '"This is the WORST!" Zee was mad \u2014 mad at the reef, mad at being lost, mad at everything.',
+            'Zee saw a wise old turtle. Zee signed PLEASE with a tentacle. "Can you help me find home?"',
+            "The turtle led Zee all the way back! Mama was waiting. Zee signed I LOVE YOU with all eight tentacles.",
+            "Zee learned: even when things are scary, you are never really alone. Just ask.",
         ],
     },
 }

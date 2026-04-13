@@ -74,6 +74,10 @@ flutter:
     - assets/audio/stories/activity-the-same-blue-truck/
     - assets/audio/stories/activity-zee-finds-all-the-colors/
     - assets/audio/stories/activity-zee-tries-something-new/
+    - assets/audio/stories/activity-sparks-and-the-scary-storm/
+    - assets/audio/stories/activity-clover-s-rainy-day/
+    - assets/audio/stories/activity-zee-learns-to-ask-for-help/
+    - assets/audio/stories/activity-zee-gets-lost/
 
 flutter_launcher_icons:
   android: true
