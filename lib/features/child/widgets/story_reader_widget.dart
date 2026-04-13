@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:seedling/core/services/story_audio_service.dart';
 import 'package:seedling/core/theme/app_theme.dart';
 import 'package:seedling/features/child/widgets/characters/sparks_character.dart';
 import 'package:seedling/features/child/widgets/characters/clover_character.dart';
@@ -22,6 +24,10 @@ class StoryReaderWidget extends StatefulWidget {
 class _StoryReaderWidgetState extends State<StoryReaderWidget> {
   late PageController _pageController;
   late FlutterTts _flutterTts;
+  late StoryAudioService _audioService;
+  StreamSubscription<TextRange?>? _highlightSub;
+  StreamSubscription<void>? _completionSub;
+  bool _useElevenLabs = false; // per-page flag
 
   int _currentPage = 0;
   bool _isPlaying = false;
@@ -32,6 +38,7 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    _audioService = StoryAudioService();
     _initTts();
   }
 
@@ -56,20 +63,8 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
 
     // Handle completion
     _flutterTts.setCompletionHandler(() {
-      if (mounted && _isPlaying) {
-        setState(() {
-          _isPlaying = false;
-          _isPaused = false;
-        });
-        // Auto-advance to next page after 800ms
-        Future.delayed(const Duration(milliseconds: 800), () {
-          if (mounted && _currentPage < _pages.length - 1) {
-            _pageController.nextPage(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-            ).then((_) => _playCurrentPage());
-          }
-        });
+      if (mounted && _isPlaying && !_useElevenLabs) {
+        _onPlaybackComplete();
       }
     });
 
@@ -87,6 +82,9 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
   void dispose() {
     _pageController.dispose();
     _flutterTts.stop();
+    _highlightSub?.cancel();
+    _completionSub?.cancel();
+    _audioService.dispose();
     super.dispose();
   }
 
@@ -108,17 +106,41 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
 
   bool get _isLastPage => _currentPage == _pages.length - 1;
 
+  String? get _storyId {
+    // The content map comes from Firestore — the document ID is the story ID.
+    // It's passed through as 'id' or we derive from the activity data.
+    return widget.content['id'] as String?;
+  }
+
   Widget _buildCharacter(String? character, String emotion) {
     switch (character?.toLowerCase()) {
       case 'sparks':
-        return SparksCharacter(emotion: emotion, size: 140);
+        return SparksCharacter(emotion: emotion, size: 280);
       case 'clover':
-        return CloverCharacter(emotion: emotion, size: 140);
+        return CloverCharacter(emotion: emotion, size: 280);
       case 'zee':
-        return ZeeCharacter(emotion: emotion, size: 140);
+        return ZeeCharacter(emotion: emotion, size: 280);
       default:
         return const SizedBox.shrink();
     }
+  }
+
+  void _onPlaybackComplete() {
+    if (!mounted || !_isPlaying) return;
+    setState(() {
+      _isPlaying = false;
+      _isPaused = false;
+      _highlightRange = null;
+    });
+    // Auto-advance to next page after 800ms
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted && _currentPage < _pages.length - 1) {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        ).then((_) => _playCurrentPage());
+      }
+    });
   }
 
   Future<void> _playCurrentPage() async {
@@ -133,34 +155,72 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
       _highlightRange = null;
     });
 
+    // Try ElevenLabs pre-generated audio first
+    final storyId = _storyId;
+    if (storyId != null) {
+      final loaded = await _audioService.loadPage(
+        storyId: storyId,
+        pageIndex: _currentPage,
+        pageText: pageText,
+      );
+
+      if (loaded && mounted) {
+        _useElevenLabs = true;
+
+        // Set up highlight listener
+        _highlightSub?.cancel();
+        _highlightSub = _audioService.highlightStream.listen((range) {
+          if (mounted) setState(() => _highlightRange = range);
+        });
+
+        // Set up completion listener
+        _completionSub?.cancel();
+        _completionSub = _audioService.completionStream.listen((_) {
+          if (mounted) _onPlaybackComplete();
+        });
+
+        await _audioService.play();
+        return;
+      }
+    }
+
+    // Fallback: use flutter_tts
+    _useElevenLabs = false;
     await _flutterTts.speak(pageText);
   }
 
   Future<void> _pausePlayback() async {
-    await _flutterTts.pause();
-    if (mounted) {
-      setState(() => _isPaused = true);
+    if (_useElevenLabs) {
+      await _audioService.pause();
+    } else {
+      await _flutterTts.pause();
     }
+    if (mounted) setState(() => _isPaused = true);
   }
 
   Future<void> _resumePlayback() async {
-    _flutterTts.setProgressHandler(
-      (String text, int startChar, int endChar, String word) {
-        if (mounted) {
-          setState(() {
-            _highlightRange = TextRange(start: startChar, end: endChar);
-          });
-        }
-      },
-    );
-    await _flutterTts.speak(_pages[_currentPage]['text'] ?? '');
-    if (mounted) {
-      setState(() => _isPaused = false);
+    if (_useElevenLabs) {
+      await _audioService.resume();
+    } else {
+      _flutterTts.setProgressHandler(
+        (String text, int startChar, int endChar, String word) {
+          if (mounted) {
+            setState(() {
+              _highlightRange = TextRange(start: startChar, end: endChar);
+            });
+          }
+        },
+      );
+      await _flutterTts.speak(_pages[_currentPage]['text'] ?? '');
     }
+    if (mounted) setState(() => _isPaused = false);
   }
 
   void _onPageChanged(int newPage) async {
+    await _audioService.stop();
     await _flutterTts.stop();
+    _highlightSub?.cancel();
+    _completionSub?.cancel();
     if (mounted) {
       setState(() {
         _currentPage = newPage;
@@ -169,7 +229,6 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
         _highlightRange = null;
       });
     }
-    // Auto-start reading new page
     Future.delayed(const Duration(milliseconds: 300), _playCurrentPage);
   }
 
@@ -293,15 +352,18 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
                         builder: (context, constraints) => SingleChildScrollView(
                           child: ConstrainedBox(
                             constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
+                            child: Transform.translate(
+                              offset: const Offset(0, -40),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
                                 if (page['character'] != null) ...[
                                   _buildCharacter(page['character'], page['emotion']),
-                                  const SizedBox(height: 24),
+                                  const SizedBox(height: 16),
                                 ],
                                 _buildStoryText(page['text']),
                               ],
+                              ),
                             ),
                           ),
                         ),
