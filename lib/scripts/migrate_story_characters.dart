@@ -19,7 +19,7 @@ void main() async {
           {
             'text': 'The stairs looked so tall! But Sparks was excited to explore.',
             'character': 'sparks',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text': 'Then Sparks found a tiny mouse! It was so small compared to Sparks.',
@@ -52,10 +52,9 @@ void main() async {
       'content': {
         'pages': [
           {
-            'text':
-                'Clover loved patterns and routines. Today was a BIG day!',
+            'text': 'Clover loved patterns and routines. Today was a BIG day!',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text':
@@ -67,7 +66,7 @@ void main() async {
             'text':
                 'Step by step, Clover counted each one. The pattern was soothing.',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'calm',
           },
           {
             'text':
@@ -76,10 +75,9 @@ void main() async {
             'emotion': 'frustrated',
           },
           {
-            'text':
-                'Almost there! "Seven... eight... nine... TEN!"',
+            'text': 'Almost there! "Seven... eight... nine... TEN!"',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text':
@@ -104,7 +102,7 @@ void main() async {
             'text':
                 'Second: eat a yummy breakfast. Clover likes knowing what comes next.',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'calm',
           },
           {
             'text':
@@ -116,13 +114,13 @@ void main() async {
             'text':
                 'Fourth: put on clothes. Clover picks the same favorite outfit.',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'calm',
           },
           {
             'text':
                 'Fifth: look in the mirror and smile. Clover is ready for the day!',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text':
@@ -141,19 +139,18 @@ void main() async {
             'text':
                 'Sparks was having SO much fun at the park! The day was perfect!',
             'character': 'sparks',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text':
                 'But then... it was time to leave. Sparks felt a BIG feeling growing inside.',
             'character': 'sparks',
-            'emotion': 'sad',
+            'emotion': 'worried',
           },
           {
-            'text':
-                '"I don\'t want to go!" Sparks felt frustrated and upset.',
+            'text': '"I don\'t want to go!" Sparks felt frustrated and upset.',
             'character': 'sparks',
-            'emotion': 'angry',
+            'emotion': 'frustrated',
           },
           {
             'text':
@@ -190,25 +187,25 @@ void main() async {
             'text':
                 '"There it is! The blue truck! Same as always!" Clover wagged with joy.',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text':
                 'One day, the blue truck didn\'t come. Clover felt worried.',
             'character': 'clover',
-            'emotion': 'scared',
+            'emotion': 'worried',
           },
           {
             'text':
                 'But then... there it was! A little later than usual, but still there!',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'surprised',
           },
           {
             'text':
                 'Clover realized that patterns sometimes change a little, and that\'s okay!',
             'character': 'clover',
-            'emotion': 'happy',
+            'emotion': 'calm',
           },
           {
             'text':
@@ -227,19 +224,19 @@ void main() async {
             'text':
                 'Zee the curious octopus was exploring the reef. "What colors are there?"',
             'character': 'zee',
-            'emotion': 'happy',
+            'emotion': 'curious',
           },
           {
             'text':
                 'First, Zee found something RED! A beautiful red coral. "How pretty!"',
             'character': 'zee',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text':
                 'Next, a bright YELLOW fish swam by. Zee reached out with tentacles.',
             'character': 'zee',
-            'emotion': 'happy',
+            'emotion': 'curious',
           },
           {
             'text':
@@ -251,7 +248,7 @@ void main() async {
             'text':
                 'Zee also found ORANGE, PURPLE, and so many more! The world was colorful!',
             'character': 'zee',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text':
@@ -270,7 +267,7 @@ void main() async {
             'text':
                 'Zee found something new floating in the water. "What is this?" Zee was curious!',
             'character': 'zee',
-            'emotion': 'happy',
+            'emotion': 'curious',
           },
           {
             'text': 'It was a seaweed snack! Zee had never tried seaweed before.',
@@ -281,13 +278,13 @@ void main() async {
             'text':
                 '"It\'s different..." Zee felt a little nervous. "What if I don\'t like it?"',
             'character': 'zee',
-            'emotion': 'scared',
+            'emotion': 'worried',
           },
           {
             'text':
                 'But Zee was brave! "I can try new things!" Zee tasted the seaweed.',
             'character': 'zee',
-            'emotion': 'happy',
+            'emotion': 'excited',
           },
           {
             'text':
@@ -304,21 +301,225 @@ void main() async {
         ],
       },
     },
+    'activity-sparks-and-the-scary-storm': {
+      'title': 'Sparks and the Scary Storm',
+      'type': 'story',
+      'age_ranges': ['3-7'],
+      'duration_minutes': 5,
+      'media_refs': <String>[],
+      'skills_targeted': ['emotional_regulation', 'fear_management', 'resilience'],
+      'learning_objectives': [
+        'Big feelings like anger and fear are normal',
+        'Storms pass, and so do big feelings',
+        'You can start again after something goes wrong',
+      ],
+      'parent_follow_up': 'Ask: "Have you ever felt scared and angry at the same time? What does that feel like in your body?"',
+      'published': true,
+      'version': 1,
+      'contentType': 'story_pages',
+      'content': {
+        'pages': [
+          {
+            'text': 'Sparks was building the BEST sandcastle ever! Tall towers, a moat, everything!',
+            'character': 'sparks',
+            'emotion': 'excited',
+          },
+          {
+            'text': 'Dark clouds rolled in. The wind blew harder. "What\'s happening to the sky?"',
+            'character': 'sparks',
+            'emotion': 'worried',
+          },
+          {
+            'text': 'BOOM! Thunder crashed so loud the ground shook! Sparks hid behind the sandcastle.',
+            'character': 'sparks',
+            'emotion': 'scared',
+          },
+          {
+            'text': 'The rain washed the sandcastle away. "NO! That\'s not fair!" Sparks stomped and growled.',
+            'character': 'sparks',
+            'emotion': 'angry',
+          },
+          {
+            'text': 'Mom sat with Sparks and listened to the rain. "Storms pass. So do big feelings."',
+            'character': 'sparks',
+            'emotion': 'happy',
+          },
+          {
+            'text': 'When the sun came back, Sparks built a NEW sandcastle. Even better than before!',
+            'character': 'sparks',
+            'emotion': 'proud',
+          },
+        ],
+      },
+    },
+    'activity-clover-s-rainy-day': {
+      'title': "Clover's Rainy Day",
+      'type': 'story',
+      'age_ranges': ['3-7'],
+      'duration_minutes': 5,
+      'media_refs': <String>[],
+      'skills_targeted': ['flexibility', 'emotional_regulation', 'routine_adaptation'],
+      'learning_objectives': [
+        'Plans can change and that is okay',
+        'Feeling sad, angry, and scared about change is normal',
+        'You can make a new plan when the old one breaks',
+      ],
+      'parent_follow_up': 'Ask: "Has something you planned ever gotten changed? What did you do? Could we make a new plan together?"',
+      'published': true,
+      'version': 1,
+      'contentType': 'story_pages',
+      'content': {
+        'pages': [
+          {
+            'text': 'Today was PARK DAY! Clover packed a bag and waited by the door. "Let\'s go!"',
+            'character': 'clover',
+            'emotion': 'excited',
+          },
+          {
+            'text': 'But it was raining. A lot. No park today. Clover\'s tail drooped.',
+            'character': 'clover',
+            'emotion': 'sad',
+          },
+          {
+            'text': '"It\'s not FAIR!" Clover barked. "The plan was the PARK! Rain ruined everything!"',
+            'character': 'clover',
+            'emotion': 'angry',
+          },
+          {
+            'text': 'A big BOOM of thunder shook the windows. Clover dove under the blanket.',
+            'character': 'clover',
+            'emotion': 'scared',
+          },
+          {
+            'text': 'Clover took a deep breath. "Maybe I can make a new plan for inside."',
+            'character': 'clover',
+            'emotion': 'calm',
+          },
+          {
+            'text': 'Clover built a blanket fort and read stories all day. New plans can be great plans!',
+            'character': 'clover',
+            'emotion': 'proud',
+          },
+        ],
+      },
+    },
+    'activity-zee-learns-to-ask-for-help': {
+      'title': 'Zee Learns to Ask for Help',
+      'type': 'story',
+      'age_ranges': ['3-7'],
+      'duration_minutes': 5,
+      'media_refs': <String>[],
+      'skills_targeted': ['help_seeking', 'emotional_regulation', 'asl_help', 'asl_thank_you', 'asl_please'],
+      'learning_objectives': [
+        'Asking for help is brave, not weak',
+        'Practice the ASL sign for HELP and THANK YOU',
+        'Frustration and sadness are signals that you might need help',
+      ],
+      'parent_follow_up': 'Practice the HELP sign together. Ask: "When is a time you needed help? Who did you ask?"',
+      'published': true,
+      'version': 1,
+      'contentType': 'story_pages',
+      'content': {
+        'pages': [
+          {
+            'text': 'Zee spotted something shiny deep inside a coral hole. "Ooh, what IS that?"',
+            'character': 'zee',
+            'emotion': 'curious',
+          },
+          {
+            'text': 'Zee pulled and squeezed with all eight tentacles. It wouldn\'t budge!',
+            'character': 'zee',
+            'emotion': 'frustrated',
+          },
+          {
+            'text': '"I can\'t do it..." Zee\'s tentacles drooped. Maybe it was impossible.',
+            'character': 'zee',
+            'emotion': 'sad',
+          },
+          {
+            'text': 'Wait! Zee remembered a special sign \u2014 HELP! Zee signed to a passing fish. "Please?"',
+            'character': 'zee',
+            'emotion': 'asl/help',
+          },
+          {
+            'text': 'The fish wiggled it free \u2014 a beautiful pearl! "Thank you!" Zee signed back.',
+            'character': 'zee',
+            'emotion': 'asl/thank you',
+          },
+          {
+            'text': 'Zee learned something important: asking for help isn\'t giving up. It\'s being brave!',
+            'character': 'zee',
+            'emotion': 'proud',
+          },
+        ],
+      },
+    },
+    'activity-zee-gets-lost': {
+      'title': 'Zee Gets Lost',
+      'type': 'story',
+      'age_ranges': ['3-7'],
+      'duration_minutes': 5,
+      'media_refs': <String>[],
+      'skills_targeted': ['fear_management', 'help_seeking', 'asl_please', 'asl_i_love_you'],
+      'learning_objectives': [
+        'Being lost or scared can make you feel angry',
+        'Practice the ASL sign for PLEASE and I LOVE YOU',
+        'You are never really alone when you know how to ask',
+      ],
+      'parent_follow_up': 'Practice the I LOVE YOU sign together. Ask: "If you ever felt lost, what would you do first?"',
+      'published': true,
+      'version': 1,
+      'contentType': 'story_pages',
+      'content': {
+        'pages': [
+          {
+            'text': 'Zee swam faster and faster, exploring a new part of the reef. So many new things!',
+            'character': 'zee',
+            'emotion': 'excited',
+          },
+          {
+            'text': 'But wait... nothing looked familiar. Which way was home? Zee\'s tentacles curled up tight.',
+            'character': 'zee',
+            'emotion': 'scared',
+          },
+          {
+            'text': '"This is the WORST!" Zee was mad \u2014 mad at the reef, mad at being lost, mad at everything.',
+            'character': 'zee',
+            'emotion': 'angry',
+          },
+          {
+            'text': 'Zee saw a wise old turtle. Zee signed PLEASE with a tentacle. "Can you help me find home?"',
+            'character': 'zee',
+            'emotion': 'asl/please',
+          },
+          {
+            'text': 'The turtle led Zee all the way back! Mama was waiting. Zee signed I LOVE YOU with all eight tentacles.',
+            'character': 'zee',
+            'emotion': 'asl/i love you',
+          },
+          {
+            'text': 'Zee learned: even when things are scary, you are never really alone. Just ask.',
+            'character': 'zee',
+            'emotion': 'proud',
+          },
+        ],
+      },
+    },
   };
 
-  print('Starting migration of story activities with character data...');
+  print('Starting migration of story activities...');
 
   try {
     for (final entry in updates.entries) {
       final activityId = entry.key;
       final data = entry.value;
 
-      await db.collection('child_activities').doc(activityId).update(data);
-      print('✅ Updated: $activityId');
+      await db.collection('child_activities').doc(activityId).set(data, SetOptions(merge: true));
+      print('Updated: $activityId');
     }
 
-    print('\n🎉 All story activities successfully updated with character data!');
+    print('\nAll story activities successfully updated!');
   } catch (e) {
-    print('❌ Error during migration: $e');
+    print('Error during migration: $e');
   }
 }
