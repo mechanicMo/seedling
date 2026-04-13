@@ -22,7 +22,8 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
   int? _selectedIndex;
   bool _showFeedback = false;
   bool _isCorrect = false;
-  int? _hintIndex;
+  bool _showingHint = false;
+  String _hintText = '';
   late AnimationController _pulseController;
 
   @override
@@ -51,14 +52,17 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
   bool get _isGameComplete => _correctCount >= _roundsToWin;
 
   void _showHint() {
-    if (_showFeedback || _hintIndex != null) return;
+    if (_showFeedback || _showingHint) return;
     final round = _rounds[_currentRound % _rounds.length];
-    final correctIndex = round['correct_index'] as int?;
-    if (correctIndex == null) return;
+    final hint = round['hint']?.toString();
+    if (hint == null) return;
 
-    setState(() => _hintIndex = correctIndex);
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      if (mounted) setState(() => _hintIndex = null);
+    setState(() {
+      _showingHint = true;
+      _hintText = hint;
+    });
+    Future.delayed(const Duration(milliseconds: 2000), () {
+      if (mounted) setState(() => _showingHint = false);
     });
   }
 
@@ -85,6 +89,7 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
             _currentRound++;
             _selectedIndex = null;
             _showFeedback = false;
+            _showingHint = false;
           });
         }
       });
@@ -206,20 +211,7 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
               ),
             ),
           ),
-          const SizedBox(height: 16),
-          // Hint button
-          Align(
-            alignment: Alignment.centerRight,
-            child: TextButton.icon(
-              onPressed: _showFeedback || _hintIndex != null ? null : _showHint,
-              icon: const Icon(Icons.lightbulb_outline, size: 18),
-              label: const Text('Hint'),
-              style: TextButton.styleFrom(
-                foregroundColor: AppColors.softAmber,
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 24),
           // Options
           Expanded(
             child: SingleChildScrollView(
@@ -239,16 +231,12 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
                               ? (_isCorrect
                                   ? Colors.green.withOpacity(0.2)
                                   : Colors.red.withOpacity(0.2))
-                              : _hintIndex == index
-                                  ? AppColors.softAmber.withOpacity(0.3)
-                                  : Colors.grey.withOpacity(0.1),
+                              : Colors.grey.withOpacity(0.1),
                           border: Border.all(
                             color: _selectedIndex == index
                                 ? (_isCorrect ? Colors.green : Colors.red)
-                                : _hintIndex == index
-                                    ? AppColors.softAmber
-                                    : Colors.grey[300]!,
-                            width: _hintIndex == index ? 3 : 2,
+                                : Colors.grey[300]!,
+                            width: 2,
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -264,6 +252,50 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
               ),
             ),
           ),
+          // Hint button
+          Padding(
+            padding: const EdgeInsets.only(top: 16),
+            child: ElevatedButton.icon(
+              onPressed: _showFeedback || _showingHint ? null : _showHint,
+              icon: const Icon(Icons.lightbulb_outline, size: 20),
+              label: const Text('Need a hint?'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.softAmber,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
+            ),
+          ),
+          // Hint display
+          if (_showingHint) ...[
+            const SizedBox(height: 16),
+            AnimatedOpacity(
+              opacity: _showingHint ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.softAmber.withOpacity(0.2),
+                  border: Border.all(
+                    color: AppColors.softAmber,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  _hintText,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ),
+          ],
           // Feedback
           if (_showFeedback) ...[
             const SizedBox(height: 16),
