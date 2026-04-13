@@ -664,7 +664,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
   {
     title: 'Counting Rainbow',
     type: 'game',
-    contentType: 'game_sequence',
+    content_type: 'game_sequence',
     age_ranges: ['3-7'],
     duration_minutes: 6,
     media_refs: [],
@@ -741,7 +741,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
   {
     title: 'Shape Detective',
     type: 'game',
-    contentType: 'game_tap_match',
+    content_type: 'game_tap_match',
     age_ranges: ['3-7'],
     duration_minutes: 7,
     media_refs: [],
@@ -812,7 +812,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
   {
     title: 'Letter Sounds Safari',
     type: 'game',
-    contentType: 'game_tap_match',
+    content_type: 'game_tap_match',
     age_ranges: ['3-7'],
     duration_minutes: 8,
     media_refs: [],
@@ -929,7 +929,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
   {
     title: 'Memory Match',
     type: 'game',
-    contentType: 'game_memory',
+    content_type: 'game_memory',
     age_ranges: ['3-7'],
     duration_minutes: 8,
     media_refs: [],
@@ -957,7 +957,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
   {
     title: 'Number Hop',
     type: 'game',
-    contentType: 'game_tap_match',
+    content_type: 'game_tap_match',
     age_ranges: ['3-7'],
     duration_minutes: 7,
     media_refs: [],
@@ -1020,7 +1020,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
   {
     title: 'Pattern Maker',
     type: 'game',
-    contentType: 'game_sequence',
+    content_type: 'game_sequence',
     age_ranges: ['3-7'],
     duration_minutes: 8,
     media_refs: [],
@@ -1097,7 +1097,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
   {
     title: 'Word Builder',
     type: 'game',
-    contentType: 'game_tap_match',
+    content_type: 'game_tap_match',
     age_ranges: ['7-12'],
     duration_minutes: 8,
     media_refs: [],

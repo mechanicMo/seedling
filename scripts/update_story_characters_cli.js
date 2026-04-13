@@ -11,7 +11,7 @@ const db = admin.firestore();
 
 const updates = {
   'activity-big-world-little-hands': {
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -48,7 +48,7 @@ const updates = {
     },
   },
   'activity-clover-counts-the-steps': {
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -85,7 +85,7 @@ const updates = {
     },
   },
   'activity-clover-s-morning': {
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -122,7 +122,7 @@ const updates = {
     },
   },
   'activity-sparks-and-the-end-of-park-time': {
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -159,7 +159,7 @@ const updates = {
     },
   },
   'activity-the-same-blue-truck': {
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -196,7 +196,7 @@ const updates = {
     },
   },
   'activity-zee-finds-all-the-colors': {
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -233,7 +233,7 @@ const updates = {
     },
   },
   'activity-zee-tries-something-new': {
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -284,7 +284,7 @@ const updates = {
     parent_follow_up: 'Ask: "Have you ever felt scared and angry at the same time? What does that feel like in your body?"',
     published: true,
     version: 1,
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -335,7 +335,7 @@ const updates = {
     parent_follow_up: 'Ask: "Has something you planned ever gotten changed? What did you do? Could we make a new plan together?"',
     published: true,
     version: 1,
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -386,7 +386,7 @@ const updates = {
     parent_follow_up: 'Practice the HELP sign together. Ask: "When is a time you needed help? Who did you ask?"',
     published: true,
     version: 1,
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
@@ -437,7 +437,7 @@ const updates = {
     parent_follow_up: 'Practice the I LOVE YOU sign together. Ask: "If you ever felt lost, what would you do first?"',
     published: true,
     version: 1,
-    contentType: 'story_pages',
+    content_type: 'story_pages',
     content: {
       pages: [
         {
