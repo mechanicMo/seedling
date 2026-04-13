@@ -929,7 +929,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
   {
     title: 'Memory Match',
     type: 'game',
-    contentType: 'game_memory_flip',
+    contentType: 'game_memory',
     age_ranges: ['3-7'],
     duration_minutes: 8,
     media_refs: [],
