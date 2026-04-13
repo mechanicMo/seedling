@@ -61,6 +61,20 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    - assets/characters/sparks/
+    - assets/characters/clover/
+    - assets/characters/zee/
+    - assets/characters/zee/asl/
+    - assets/characters/for landing page/
+    - assets/audio/stories/activity-big-world-little-hands/
+    - assets/audio/stories/activity-clover-counts-the-steps/
+    - assets/audio/stories/activity-clover-s-morning/
+    - assets/audio/stories/activity-sparks-and-the-end-of-park-time/
+    - assets/audio/stories/activity-the-same-blue-truck/
+    - assets/audio/stories/activity-zee-finds-all-the-colors/
+    - assets/audio/stories/activity-zee-tries-something-new/
+
 flutter_launcher_icons:
   android: true
   ios: true
