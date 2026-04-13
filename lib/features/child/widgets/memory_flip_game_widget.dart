@@ -21,6 +21,7 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
   int _matchedCount = 0;
   bool _isProcessing = false;
   Set<int> _hintIndices = {};
+  bool _showingHintText = false;
 
   @override
   void initState() {
@@ -57,9 +58,17 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
       for (int j = i + 1; j < _cards.length; j++) {
         if (_cards[j].isMatched) continue;
         if (_cards[i].a == _cards[j].a && _cards[i].b == _cards[j].b) {
-          setState(() => _hintIndices = {i, j});
-          Future.delayed(const Duration(milliseconds: 1200), () {
-            if (mounted) setState(() => _hintIndices = {});
+          setState(() {
+            _hintIndices = {i, j};
+            _showingHintText = true;
+          });
+          Future.delayed(const Duration(milliseconds: 1500), () {
+            if (mounted) {
+              setState(() {
+                _hintIndices = {};
+                _showingHintText = false;
+              });
+            }
           });
           return;
         }
@@ -148,22 +157,9 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Matched: $_matchedCount / ${_cards.length ~/ 2}',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-              ),
-              TextButton.icon(
-                onPressed: _isProcessing || _hintIndices.isNotEmpty ? null : _showHint,
-                icon: const Icon(Icons.lightbulb_outline, size: 18),
-                label: const Text('Hint'),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppColors.softAmber,
-                ),
-              ),
-            ],
+          Text(
+            'Matched: $_matchedCount / ${_cards.length ~/ 2}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -182,6 +178,48 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
               ),
             ),
           ),
+          const SizedBox(height: 16),
+          // Hint button
+          ElevatedButton.icon(
+            onPressed: _isProcessing || _hintIndices.isNotEmpty ? null : _showHint,
+            icon: const Icon(Icons.lightbulb_outline, size: 20),
+            label: const Text('Need a hint?'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.softAmber,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            ),
+          ),
+          // Hint text display
+          if (_showingHintText) ...[
+            const SizedBox(height: 12),
+            AnimatedOpacity(
+              opacity: _showingHintText ? 1.0 : 0.0,
+              duration: const Duration(milliseconds: 200),
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppColors.softAmber.withOpacity(0.2),
+                  border: Border.all(
+                    color: AppColors.softAmber,
+                    width: 2,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Text(
+                  'Look carefully! Two matching cards are glowing!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textSecondary,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
