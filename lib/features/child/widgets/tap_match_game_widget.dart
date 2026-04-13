@@ -61,9 +61,6 @@ class _TapMatchGameWidgetState extends State<TapMatchGameWidget>
       _showingHint = true;
       _hintText = hint;
     });
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      if (mounted) setState(() => _showingHint = false);
-    });
   }
 
   void _handleAnswer(int index) {
@@ -246,19 +243,20 @@ class _TapMatchGameWidgetState extends State<TapMatchGameWidget>
             ),
           ),
           // Hint button
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: ElevatedButton.icon(
-              onPressed: _showFeedback || _showingHint ? null : _showHint,
-              icon: const Icon(Icons.lightbulb_outline, size: 20),
-              label: const Text('Need a hint?'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.softAmber,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          if (!_showingHint)
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: ElevatedButton.icon(
+                onPressed: _showFeedback ? null : _showHint,
+                icon: const Icon(Icons.lightbulb_outline, size: 20),
+                label: const Text('Need a hint?'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.softAmber,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
               ),
             ),
-          ),
           // Hint display
           if (_showingHint) ...[
             const SizedBox(height: 16),

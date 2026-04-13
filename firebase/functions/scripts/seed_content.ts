@@ -682,7 +682,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
       rounds: [
         {
           prompt: '1, 2, 3, ?',
-          sequence: ['1', '2', '3', '?'],
+
           options: ['4', '5', '6'],
           correct_index: 0,
           hint: "We're counting up by one! What comes after 3?",
@@ -690,9 +690,9 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
           feedback_wrong: 'Try again! Keep counting up: 1, 2, 3...',
         },
         {
-          prompt: 'Red, orange, yellow, ?',
-          sequence: ['Red', 'Orange', 'Yellow', '?'],
-          options: ['Green', 'Blue', 'Purple'],
+          prompt: '🔴, 🟠, 🟡, ?',
+
+          options: ['🟢', '🔵', '🟣'],
           correct_index: 0,
           hint: 'Think of a rainbow! Red, orange, yellow, and then...',
           feedback_correct: 'Perfect! That\'s the rainbow order!',
@@ -700,7 +700,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
         },
         {
           prompt: 'Star, star-star, star-star-star, ?',
-          sequence: ['⭐', '⭐⭐', '⭐⭐⭐', '?'],
+
           options: ['⭐⭐⭐⭐', '⭐⭐', '⭐'],
           correct_index: 0,
           hint: 'The stars are growing by one each time!',
@@ -709,7 +709,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
         },
         {
           prompt: '5, 6, 7, ?',
-          sequence: ['5', '6', '7', '?'],
+
           options: ['8', '9', '10'],
           correct_index: 0,
           hint: 'Keep counting! 5, 6, 7... what\'s next?',
@@ -717,9 +717,9 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
           feedback_wrong: 'Count with your fingers: 5, 6, 7...',
         },
         {
-          prompt: 'Red, red, blue, blue, ?',
-          sequence: ['Red', 'Red', 'Blue', 'Blue', '?'],
-          options: ['Red', 'Green', 'Yellow'],
+          prompt: '🔴, 🔴, 🔵, 🔵, ?',
+
+          options: ['🔴', '🟢', '🟡'],
           correct_index: 0,
           hint: 'The pattern goes: two reds, two blues, two...',
           feedback_correct: 'Perfect! Two of each color!',
@@ -727,7 +727,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
         },
         {
           prompt: '2, 4, 6, ?',
-          sequence: ['2', '4', '6', '?'],
+
           options: ['8', '5', '7'],
           correct_index: 0,
           hint: "We're skip-counting by 2! Count on your fingers: 2, 4, 6...",
@@ -1037,9 +1037,9 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
     content: {
       rounds: [
         {
-          prompt: 'Red, blue, red, blue, ?',
-          sequence: ['Red', 'Blue', 'Red', 'Blue', '?'],
-          options: ['Red', 'Blue', 'Yellow'],
+          prompt: '🔴, 🔵, 🔴, 🔵, ?',
+
+          options: ['🔴', '🔵', '🟡'],
           correct_index: 0,
           hint: 'The colors take turns! Red\'s turn, blue\'s turn, red\'s turn... whose turn is it?',
           feedback_correct: 'Perfect! Red\'s turn!',
@@ -1047,7 +1047,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
         },
         {
           prompt: 'Star, moon, star, moon, ?',
-          sequence: ['⭐', '🌙', '⭐', '🌙', '?'],
+
           options: ['⭐', '🌙', '☀️'],
           correct_index: 0,
           hint: 'Look at the first two. They keep repeating!',
@@ -1056,7 +1056,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
         },
         {
           prompt: 'Dog, dog, cat, dog, dog, ?',
-          sequence: ['Dog', 'Dog', 'Cat', 'Dog', 'Dog', '?'],
+
           options: ['Cat', 'Dog', 'Mouse'],
           correct_index: 0,
           hint: 'Two dogs then one cat. Two dogs then one...',
@@ -1065,7 +1065,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
         },
         {
           prompt: 'Triangle, square, triangle, ?',
-          sequence: ['△', '□', '△', '?'],
+
           options: ['□', '△', '○'],
           correct_index: 0,
           hint: 'They go back and forth. Triangle, square, triangle...',
@@ -1074,7 +1074,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
         },
         {
           prompt: '1, 1, 2, 1, 1, ?',
-          sequence: ['1', '1', '2', '1', '1', '?'],
+
           options: ['2', '1', '3'],
           correct_index: 0,
           hint: 'Look at the pattern: 1-1-2, 1-1-?',
@@ -1083,7 +1083,7 @@ const childActivities: Omit<ChildActivity, 'id'>[] = [
         },
         {
           prompt: 'Apple, banana, orange, apple, banana, ?',
-          sequence: ['🍎', '🍌', '🍊', '🍎', '🍌', '?'],
+
           options: ['🍊', '🍌', '🍎'],
           correct_index: 0,
           hint: 'Three fruits repeating! Apple, banana, then...',

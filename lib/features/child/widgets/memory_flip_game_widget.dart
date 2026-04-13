@@ -66,7 +66,6 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
             if (mounted) {
               setState(() {
                 _hintIndices = {};
-                _showingHintText = false;
               });
             }
           });
@@ -180,16 +179,17 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
           ),
           const SizedBox(height: 16),
           // Hint button
-          ElevatedButton.icon(
-            onPressed: _isProcessing || _hintIndices.isNotEmpty ? null : _showHint,
-            icon: const Icon(Icons.lightbulb_outline, size: 20),
-            label: const Text('Need a hint?'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.softAmber,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          if (!_showingHintText)
+            ElevatedButton.icon(
+              onPressed: _isProcessing || _hintIndices.isNotEmpty ? null : _showHint,
+              icon: const Icon(Icons.lightbulb_outline, size: 20),
+              label: const Text('Need a hint?'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.softAmber,
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              ),
             ),
-          ),
           // Hint text display
           if (_showingHintText) ...[
             const SizedBox(height: 12),

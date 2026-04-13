@@ -15,8 +15,7 @@ class SequenceGameWidget extends StatefulWidget {
   State<SequenceGameWidget> createState() => _SequenceGameWidgetState();
 }
 
-class _SequenceGameWidgetState extends State<SequenceGameWidget>
-    with TickerProviderStateMixin {
+class _SequenceGameWidgetState extends State<SequenceGameWidget> {
   int _currentRound = 0;
   int _correctCount = 0;
   int? _selectedIndex;
@@ -24,22 +23,6 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
   bool _isCorrect = false;
   bool _showingHint = false;
   String _hintText = '';
-  late AnimationController _pulseController;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _pulseController.dispose();
-    super.dispose();
-  }
 
   List<Map<String, dynamic>> get _rounds {
     final rounds = widget.content['rounds'] as List?;
@@ -60,9 +43,6 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
     setState(() {
       _showingHint = true;
       _hintText = hint;
-    });
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      if (mounted) setState(() => _showingHint = false);
     });
   }
 
@@ -148,8 +128,6 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
 
     final round = _rounds[_currentRound % _rounds.length];
     final prompt = round['prompt']?.toString() ?? '';
-    final sequence =
-        (round['sequence'] as List?)?.map((s) => s.toString()).toList() ?? [];
     final options =
         (round['options'] as List?)?.map((o) => o.toString()).toList() ?? [];
     final feedback = _isCorrect
@@ -190,25 +168,6 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 24),
-          // Sequence
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                sequence.length,
-                (index) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
-                  child: _SequenceCard(
-                    content: sequence[index],
-                    isQuestion: index == sequence.length - 1,
-                    pulseAnimation: _pulseController,
-                  ),
-                ),
-              ),
             ),
           ),
           const SizedBox(height: 24),
@@ -253,19 +212,20 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
             ),
           ),
           // Hint button
-          Padding(
-            padding: const EdgeInsets.only(top: 16),
-            child: ElevatedButton.icon(
-              onPressed: _showFeedback || _showingHint ? null : _showHint,
-              icon: const Icon(Icons.lightbulb_outline, size: 20),
-              label: const Text('Need a hint?'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.softAmber,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          if (!_showingHint)
+            Padding(
+              padding: const EdgeInsets.only(top: 16),
+              child: ElevatedButton.icon(
+                onPressed: _showFeedback ? null : _showHint,
+                icon: const Icon(Icons.lightbulb_outline, size: 20),
+                label: const Text('Need a hint?'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.softAmber,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
               ),
             ),
-          ),
           // Hint display
           if (_showingHint) ...[
             const SizedBox(height: 16),
@@ -323,41 +283,5 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget>
   }
 }
 
-class _SequenceCard extends AnimatedWidget {
-  const _SequenceCard({
-    required this.content,
-    required this.isQuestion,
-    required Animation<double> pulseAnimation,
-  }) : super(listenable: pulseAnimation);
-
-  final String content;
-  final bool isQuestion;
-
-  @override
-  Widget build(BuildContext context) {
-    final animation = listenable as Animation<double>;
-    final scale = isQuestion ? 0.8 + (animation.value * 0.2) : 1.0;
-
-    return Transform.scale(
-      scale: scale,
-      child: Container(
-        width: 60,
-        height: 60,
-        decoration: BoxDecoration(
-          color: isQuestion ? Colors.orange.withOpacity(0.1) : Colors.white,
-          border: Border.all(
-            color: isQuestion ? Colors.orange : Colors.grey[400]!,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Center(
-          child: Text(
-            content,
-            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w600),
-          ),
-        ),
-      ),
-    );
-  }
+// _SequenceCard removed — prompt text is sufficient
 }
