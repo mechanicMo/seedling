@@ -1,10 +1,55 @@
 import * as admin from 'firebase-admin';
 import * as functions from 'firebase-functions';
+import { onMessagePublished } from 'firebase-functions/v2/pubsub';
+import { CloudBillingClient } from '@google-cloud/billing';
 import { getProviderForTier } from './ai/provider_factory.js';
 import type { ParentGuide, ChildProfileContext, CompletedActivity } from './ai/types.js';
 
 admin.initializeApp();
 const db = admin.firestore();
+
+// ── Kill Switch ─────────────────────────────────────────────────────────────
+// Billing safety net. Disables GCP billing when costs hit $0.01 budget.
+// DO NOT REMOVE, MODIFY, OR EXCLUDE FROM DEPLOYMENTS.
+//
+// GCP setup (already done):
+//   1. Budget "seedling budget" at $0.01 → Pub/Sub topic "billing-kill-switch"
+//   2. Service account seedling-5a9f6@appspot.gserviceaccount.com has roles/billing.projectManager
+//   3. Preflight check: bash scripts/preflight_killswitch_check.sh
+
+const SEEDLING_PROJECT = 'projects/seedling-5a9f6';
+const billingClient = new CloudBillingClient();
+
+export const killSwitch = onMessagePublished(
+  { topic: 'billing-kill-switch', maxInstances: 1, timeoutSeconds: 30 },
+  async (event) => {
+    const budgetData = JSON.parse(
+      Buffer.from(event.data.message.data, 'base64').toString()
+    );
+    const { costAmount, budgetAmount } = budgetData;
+    functions.logger.warn(
+      `Kill switch check: $${costAmount} spent of $${budgetAmount} budget`
+    );
+
+    if (costAmount < budgetAmount) return;
+
+    const [info] = await billingClient.getProjectBillingInfo({
+      name: SEEDLING_PROJECT,
+    });
+    if (!info.billingEnabled) {
+      functions.logger.info('Billing already disabled.');
+      return;
+    }
+
+    const [updated] = await billingClient.updateProjectBillingInfo({
+      name: SEEDLING_PROJECT,
+      projectBillingInfo: { billingAccountName: '' },
+    });
+    functions.logger.warn(
+      `BILLING DISABLED. Info: ${JSON.stringify(updated)}`
+    );
+  }
+);
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
