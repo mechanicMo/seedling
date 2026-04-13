@@ -20,6 +20,7 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
   int? _firstFlippedIndex;
   int _matchedCount = 0;
   bool _isProcessing = false;
+  Set<int> _hintIndices = {};
 
   @override
   void initState() {
@@ -45,6 +46,25 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
       ));
     }
     _cards.shuffle();
+  }
+
+  void _showHint() {
+    if (_isProcessing || _hintIndices.isNotEmpty) return;
+
+    // Find an unmatched pair
+    for (int i = 0; i < _cards.length; i++) {
+      if (_cards[i].isMatched) continue;
+      for (int j = i + 1; j < _cards.length; j++) {
+        if (_cards[j].isMatched) continue;
+        if (_cards[i].a == _cards[j].a && _cards[i].b == _cards[j].b) {
+          setState(() => _hintIndices = {i, j});
+          Future.delayed(const Duration(milliseconds: 1200), () {
+            if (mounted) setState(() => _hintIndices = {});
+          });
+          return;
+        }
+      }
+    }
   }
 
   Future<void> _onCardTap(int index) async {
@@ -128,9 +148,22 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          Text(
-            'Matched: ${_matchedCount} / ${_cards.length ~/ 2}',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Matched: $_matchedCount / ${_cards.length ~/ 2}',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              TextButton.icon(
+                onPressed: _isProcessing || _hintIndices.isNotEmpty ? null : _showHint,
+                icon: const Icon(Icons.lightbulb_outline, size: 18),
+                label: const Text('Hint'),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.softAmber,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           Expanded(
@@ -143,7 +176,8 @@ class _MemoryFlipGameWidgetState extends State<MemoryFlipGameWidget> {
               itemCount: _cards.length,
               itemBuilder: (context, index) => _MemoryCard(
                 card: _cards[index],
-                isFlipped: !_cards[index].isFront,
+                isFlipped: !_cards[index].isFront || _hintIndices.contains(index),
+                isHinted: _hintIndices.contains(index),
                 onTap: () => _onCardTap(index),
               ),
             ),
@@ -169,10 +203,16 @@ class _CardState {
 }
 
 class _MemoryCard extends StatefulWidget {
-  const _MemoryCard({required this.card, required this.isFlipped, required this.onTap});
+  const _MemoryCard({
+    required this.card,
+    required this.isFlipped,
+    this.isHinted = false,
+    required this.onTap,
+  });
 
   final _CardState card;
   final bool isFlipped;
+  final bool isHinted;
   final VoidCallback onTap;
 
   @override
@@ -230,13 +270,17 @@ class _MemoryCardState extends State<_MemoryCard>
               decoration: BoxDecoration(
                 color: widget.card.isMatched
                     ? Colors.green.withOpacity(0.2)
-                    : Colors.white,
+                    : widget.isHinted
+                        ? AppColors.softAmber.withOpacity(0.3)
+                        : Colors.white,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: widget.card.isMatched
                       ? Colors.green
-                      : Colors.grey[400]!,
-                  width: 2,
+                      : widget.isHinted
+                          ? AppColors.softAmber
+                          : Colors.grey[400]!,
+                  width: widget.isHinted ? 3 : 2,
                 ),
               ),
               child: Center(

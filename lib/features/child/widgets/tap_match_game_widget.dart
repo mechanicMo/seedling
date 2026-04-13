@@ -22,6 +22,7 @@ class _TapMatchGameWidgetState extends State<TapMatchGameWidget>
   int? _selectedIndex;
   bool _showFeedback = false;
   bool _isCorrect = false;
+  int? _hintIndex;
   late AnimationController _shakeController;
 
   @override
@@ -48,6 +49,18 @@ class _TapMatchGameWidgetState extends State<TapMatchGameWidget>
       (widget.content['rounds_to_win'] as num?)?.toInt() ?? 5;
 
   bool get _isGameComplete => _correctCount >= _roundsToWin;
+
+  void _showHint() {
+    if (_showFeedback || _hintIndex != null) return;
+    final round = _rounds[_currentRound % _rounds.length];
+    final correctIndex = round['correct_index'] as int?;
+    if (correctIndex == null) return;
+
+    setState(() => _hintIndex = correctIndex);
+    Future.delayed(const Duration(milliseconds: 1200), () {
+      if (mounted) setState(() => _hintIndex = null);
+    });
+  }
 
   void _handleAnswer(int index) {
     if (_showFeedback) return;
@@ -180,7 +193,20 @@ class _TapMatchGameWidgetState extends State<TapMatchGameWidget>
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
+          // Hint button
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: _showFeedback || _hintIndex != null ? null : _showHint,
+              icon: const Icon(Icons.lightbulb_outline, size: 18),
+              label: const Text('Hint'),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.softAmber,
+              ),
+            ),
+          ),
+          const SizedBox(height: 8),
           // Options
           Expanded(
             child: SingleChildScrollView(
@@ -193,7 +219,8 @@ class _TapMatchGameWidgetState extends State<TapMatchGameWidget>
                       animation: _shakeController,
                       child: GestureDetector(
                         onTap: () => _handleAnswer(index),
-                        child: Container(
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 300),
                           width: double.infinity,
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -201,12 +228,16 @@ class _TapMatchGameWidgetState extends State<TapMatchGameWidget>
                                 ? (_isCorrect
                                     ? Colors.green.withOpacity(0.2)
                                     : Colors.red.withOpacity(0.2))
-                                : Colors.grey.withOpacity(0.1),
+                                : _hintIndex == index
+                                    ? AppColors.softAmber.withOpacity(0.3)
+                                    : Colors.grey.withOpacity(0.1),
                             border: Border.all(
                               color: _selectedIndex == index
                                   ? (_isCorrect ? Colors.green : Colors.red)
-                                  : Colors.grey[300]!,
-                              width: 2,
+                                  : _hintIndex == index
+                                      ? AppColors.softAmber
+                                      : Colors.grey[300]!,
+                              width: _hintIndex == index ? 3 : 2,
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),

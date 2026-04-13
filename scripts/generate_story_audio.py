@@ -20,9 +20,9 @@ if not API_KEY:
     raise SystemExit("ELEVENLABS_API_KEY not found in .env")
 
 VOICE_MAP = {
-    "sparks": "cgSgspJ2msm6clMCkdW9",  # Jessica
-    "clover": "pFZP5JQG7iQjIQuC4Bku",  # Lily
-    "zee": "FGY2WhTYpPnrIDTdsKH5",      # Laura
+    "sparks": "SdbwEn9cz9936hKGPYna",  # Reyansh - bright and agile
+    "clover": "XhNlP8uwiH6XZSFnH1yL",  # Elizabeth - calm storyteller
+    "zee": "GbDIo39THauInuigCmPM",      # Nylo
 }
 
 MODEL_ID = "eleven_multilingual_v2"

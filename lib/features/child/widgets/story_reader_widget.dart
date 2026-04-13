@@ -259,12 +259,11 @@ class _StoryReaderWidgetState extends State<StoryReaderWidget> {
       if (isHighlighted) {
         textSpans.add(TextSpan(
           text: '$word$trailingSpace',
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 26,
             height: 2.0,
             fontWeight: FontWeight.w700,
-            color: const Color(0xFFF2C94C),
-            backgroundColor: AppColors.softAmber.withValues(alpha: 0.35),
+            color: Color(0xFFF2C94C),
           ),
         ));
       } else if (isAfterHighlight) {
