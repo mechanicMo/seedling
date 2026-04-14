@@ -52,6 +52,17 @@ class AiChatNotifier extends StateNotifier<AiChatState> {
     }
     if (activeChild == null) return;
 
+    // Show user message immediately — before any further async work so the UI
+    // updates right away rather than waiting on Firestore subscription checks.
+    state = state.copyWith(
+      messages: [
+        ...state.messages,
+        ChatMessage(role: 'user', content: situation),
+      ],
+      isLoading: true,
+      error: null,
+    );
+
     // Check AI query limit
     final status = await _ref.read(subscriptionStatusProvider.future);
     if (!status.canSendAiMessage) {
@@ -61,16 +72,6 @@ class AiChatNotifier extends StateNotifier<AiChatState> {
       );
       return;
     }
-
-    // Optimistically add user message
-    state = state.copyWith(
-      messages: [
-        ...state.messages,
-        ChatMessage(role: 'user', content: situation),
-      ],
-      isLoading: true,
-      error: null,
-    );
 
     try {
       final aiService = AiService();
