@@ -42,7 +42,14 @@ class AiChatNotifier extends StateNotifier<AiChatState> {
   final Ref _ref;
 
   Future<void> sendMessage(String situation) async {
-    final activeChild = _ref.read(activeChildProfileProvider);
+    // Wait for profiles to load before proceeding — fixes race condition where
+    // the initial message fires before the Firestore stream has emitted.
+    var activeChild = _ref.read(activeChildProfileProvider);
+    if (activeChild == null) {
+      final profiles = await _ref.read(childProfilesProvider.future);
+      activeChild = _ref.read(activeChildProfileProvider) ??
+          (profiles.isNotEmpty ? profiles.first : null);
+    }
     if (activeChild == null) return;
 
     // Check AI query limit
