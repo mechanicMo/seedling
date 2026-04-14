@@ -63,9 +63,13 @@ class AiChatNotifier extends StateNotifier<AiChatState> {
       error: null,
     );
 
-    // Check AI query limit
-    final status = await _ref.read(subscriptionStatusProvider.future);
-    if (!status.canSendAiMessage) {
+    // Check AI query limit synchronously — avoid awaiting the FutureProvider,
+    // which can hang on first open if its watched streams haven't emitted yet
+    // (the provider rebuilds mid-await, abandoning the future sendMessage holds).
+    // If status hasn't loaded yet, allow the message through — no user will hit
+    // the daily cap before the provider resolves.
+    final statusValue = _ref.read(subscriptionStatusProvider).valueOrNull;
+    if (statusValue != null && !statusValue.canSendAiMessage) {
       state = state.copyWith(
         error: 'You\'ve reached your daily limit of ${AppConstants.freeAiQueriesPerDay} AI queries. Upgrade to Premium for unlimited guidance.',
         isLoading: false,
