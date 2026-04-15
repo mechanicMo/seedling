@@ -145,16 +145,17 @@ class _ProfileTile extends ConsumerWidget {
             } else if (value == 'delete') {
               final confirm = await showDialog<bool>(
                 context: context,
-                builder: (_) => AlertDialog(
+                useRootNavigator: true,
+                builder: (dialogCtx) => AlertDialog(
                   title: const Text('Delete profile?'),
                   content: Text(
                       'This will permanently delete ${profile.name}\'s profile and all session history.'),
                   actions: [
                     TextButton(
-                        onPressed: () => Navigator.pop(context, false),
+                        onPressed: () => Navigator.of(dialogCtx).pop(false),
                         child: const Text('Cancel')),
                     TextButton(
-                        onPressed: () => Navigator.pop(context, true),
+                        onPressed: () => Navigator.of(dialogCtx).pop(true),
                         child: const Text('Delete',
                             style: TextStyle(color: AppColors.error))),
                   ],

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:seedling/core/theme/app_theme.dart';
 import 'package:seedling/features/parent/ai_chat_notifier.dart';
+import 'package:seedling/features/parent/parent_providers.dart';
 import 'package:seedling/models/models.dart';
 
 class AiChatScreen extends ConsumerStatefulWidget {
@@ -117,13 +118,22 @@ class _AiChatScreenState extends ConsumerState<AiChatScreen> {
   }
 }
 
-class _MessageBubble extends StatelessWidget {
+class _MessageBubble extends ConsumerWidget {
   const _MessageBubble({required this.message});
   final ChatMessage message;
 
+  String _labelForGuide(String id, List<ParentGuideDoc> guides) {
+    final match = guides.where((g) => g.id == id).toList();
+    final title = match.isNotEmpty ? match.first.title : null;
+    if (title == null || title.isEmpty) return 'Read guide';
+    return title.length > 32 ? '${title.substring(0, 29)}…' : title;
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isUser = !message.isAssistant;
+    final guidesAsync = ref.watch(parentGuidesProvider);
+    final guides = guidesAsync.asData?.value ?? const <ParentGuideDoc>[];
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -164,15 +174,15 @@ class _MessageBubble extends StatelessWidget {
               child: Wrap(
                 spacing: 6,
                 children: [
-                  for (final ref in message.guideRefs)
+                  for (final guideId in message.guideRefs)
                     ActionChip(
                       avatar: Icon(Icons.article_outlined,
                           size: 14, color: AppColors.seedGreen),
-                      label: Text('Read guide',
+                      label: Text(_labelForGuide(guideId, guides),
                           style: TextStyle(
                               fontSize: 12, color: AppColors.seedGreen)),
                       onPressed: () =>
-                          context.push('/guidance/guide/$ref'),
+                          context.push('/guidance/guide/$guideId'),
                       backgroundColor: AppColors.seedGreen.withOpacity(0.08),
                       side: BorderSide(
                           color: AppColors.seedGreen.withOpacity(0.3)),
