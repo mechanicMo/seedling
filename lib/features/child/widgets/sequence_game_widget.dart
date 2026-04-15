@@ -284,4 +284,3 @@ class _SequenceGameWidgetState extends State<SequenceGameWidget> {
 }
 
 // _SequenceCard removed — prompt text is sufficient
-}
