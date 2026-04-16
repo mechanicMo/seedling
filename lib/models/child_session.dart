@@ -14,6 +14,7 @@ class ChildSession with _$ChildSession {
     @Default(0) int durationMinutes,
     @Default([]) List<String> activityIds,
     SessionReport? report,
+    String? reportStatus,
   }) = _ChildSession;
 
   factory ChildSession.fromJson(Map<String, dynamic> json) =>
@@ -37,6 +38,7 @@ class ChildSession with _$ChildSession {
           ? SessionReport.fromMap(
               Map<String, dynamic>.from(data['report'] as Map))
           : null,
+      reportStatus: data['report_status'] as String?,
     );
   }
 }

@@ -51,15 +51,30 @@ class _SessionCompleteScreenState extends ConsumerState<SessionCompleteScreen> {
       );
 
       if (session.completedActivities.isNotEmpty) {
-        await aiService.generateSessionReport(
-          childId: activeChild.id,
-          sessionId: session.sessionId!,
-          activities: session.completedActivities.map((e) => e.toMap()).toList(),
-          durationMinutes: session.elapsedMinutes,
-        );
+        try {
+          await aiService.generateSessionReport(
+            childId: activeChild.id,
+            sessionId: session.sessionId!,
+            activities:
+                session.completedActivities.map((e) => e.toMap()).toList(),
+            durationMinutes: session.elapsedMinutes,
+          );
+          await firestoreService.clearReportStatus(
+            userId: userId,
+            childId: activeChild.id,
+            sessionId: session.sessionId!,
+          );
+        } catch (e) {
+          await firestoreService.markReportFailed(
+            userId: userId,
+            childId: activeChild.id,
+            sessionId: session.sessionId!,
+            error: e.toString(),
+          );
+        }
       }
     } catch (_) {
-      // Best-effort: don't block the child's "done" experience on a network error
+      // endChildSession failed — can't mark report status without sessionId guaranteed
     } finally {
       if (mounted) setState(() { _saving = false; _done = true; });
     }

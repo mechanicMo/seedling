@@ -244,6 +244,60 @@ class FirestoreService {
       'ended_at': FieldValue.serverTimestamp(),
       'duration_minutes': durationMinutes,
       'activities_completed': completedActivities,
+      'report_status': 'generating',
     });
+  }
+
+  /// Marks a session's report as failed after a Cloud Function error.
+  Future<void> markReportFailed({
+    required String userId,
+    required String childId,
+    required String sessionId,
+    required String error,
+  }) async {
+    await _childrenRef(userId)
+        .doc(childId)
+        .collection(AppConstants.sessionsCollection)
+        .doc(sessionId)
+        .update({
+      'report_status': 'failed',
+      'report_error': error,
+    });
+  }
+
+  /// Clears report status flags once the report is generated.
+  /// (Cloud Function writes the `report` field itself; this just cleans up the state.)
+  Future<void> clearReportStatus({
+    required String userId,
+    required String childId,
+    required String sessionId,
+  }) async {
+    await _childrenRef(userId)
+        .doc(childId)
+        .collection(AppConstants.sessionsCollection)
+        .doc(sessionId)
+        .update({
+      'report_status': FieldValue.delete(),
+      'report_error': FieldValue.delete(),
+    });
+  }
+
+  /// Reads the raw `activities_completed` array for retrying report generation.
+  Future<List<Map<String, dynamic>>> getSessionActivities({
+    required String userId,
+    required String childId,
+    required String sessionId,
+  }) async {
+    final doc = await _childrenRef(userId)
+        .doc(childId)
+        .collection(AppConstants.sessionsCollection)
+        .doc(sessionId)
+        .get();
+    final data = doc.data();
+    if (data == null) return [];
+    final raw = data['activities_completed'] as List? ?? [];
+    return raw
+        .map((e) => Map<String, dynamic>.from(e as Map))
+        .toList();
   }
 }

@@ -86,7 +86,11 @@ export class GroqProvider implements AIProvider {
       model: MODEL,
       messages: [
         { role: 'system', content: systemPrompt },
-        { role: 'user', content: 'Generate the session report.' },
+        {
+          role: 'user',
+          content:
+            'Generate the session report. Respond as JSON with fields: summary (string), skills_practiced (string[]), parent_follow_ups (string[]), ai_observations (string).',
+        },
       ],
       temperature: 0.3,
       response_format: { type: 'json_object' },

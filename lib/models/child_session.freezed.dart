@@ -26,6 +26,7 @@ mixin _$ChildSession {
   int get durationMinutes => throw _privateConstructorUsedError;
   List<String> get activityIds => throw _privateConstructorUsedError;
   SessionReport? get report => throw _privateConstructorUsedError;
+  String? get reportStatus => throw _privateConstructorUsedError;
 
   /// Serializes this ChildSession to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -49,7 +50,8 @@ abstract class $ChildSessionCopyWith<$Res> {
       DateTime? endedAt,
       int durationMinutes,
       List<String> activityIds,
-      SessionReport? report});
+      SessionReport? report,
+      String? reportStatus});
 
   $SessionReportCopyWith<$Res>? get report;
 }
@@ -75,6 +77,7 @@ class _$ChildSessionCopyWithImpl<$Res, $Val extends ChildSession>
     Object? durationMinutes = null,
     Object? activityIds = null,
     Object? report = freezed,
+    Object? reportStatus = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -101,6 +104,10 @@ class _$ChildSessionCopyWithImpl<$Res, $Val extends ChildSession>
           ? _value.report
           : report // ignore: cast_nullable_to_non_nullable
               as SessionReport?,
+      reportStatus: freezed == reportStatus
+          ? _value.reportStatus
+          : reportStatus // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 
@@ -133,7 +140,8 @@ abstract class _$$ChildSessionImplCopyWith<$Res>
       DateTime? endedAt,
       int durationMinutes,
       List<String> activityIds,
-      SessionReport? report});
+      SessionReport? report,
+      String? reportStatus});
 
   @override
   $SessionReportCopyWith<$Res>? get report;
@@ -158,6 +166,7 @@ class __$$ChildSessionImplCopyWithImpl<$Res>
     Object? durationMinutes = null,
     Object? activityIds = null,
     Object? report = freezed,
+    Object? reportStatus = freezed,
   }) {
     return _then(_$ChildSessionImpl(
       id: null == id
@@ -184,6 +193,10 @@ class __$$ChildSessionImplCopyWithImpl<$Res>
           ? _value.report
           : report // ignore: cast_nullable_to_non_nullable
               as SessionReport?,
+      reportStatus: freezed == reportStatus
+          ? _value.reportStatus
+          : reportStatus // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -197,7 +210,8 @@ class _$ChildSessionImpl implements _ChildSession {
       this.endedAt,
       this.durationMinutes = 0,
       final List<String> activityIds = const [],
-      this.report})
+      this.report,
+      this.reportStatus})
       : _activityIds = activityIds;
 
   factory _$ChildSessionImpl.fromJson(Map<String, dynamic> json) =>
@@ -223,10 +237,12 @@ class _$ChildSessionImpl implements _ChildSession {
 
   @override
   final SessionReport? report;
+  @override
+  final String? reportStatus;
 
   @override
   String toString() {
-    return 'ChildSession(id: $id, startedAt: $startedAt, endedAt: $endedAt, durationMinutes: $durationMinutes, activityIds: $activityIds, report: $report)';
+    return 'ChildSession(id: $id, startedAt: $startedAt, endedAt: $endedAt, durationMinutes: $durationMinutes, activityIds: $activityIds, report: $report, reportStatus: $reportStatus)';
   }
 
   @override
@@ -242,7 +258,9 @@ class _$ChildSessionImpl implements _ChildSession {
                 other.durationMinutes == durationMinutes) &&
             const DeepCollectionEquality()
                 .equals(other._activityIds, _activityIds) &&
-            (identical(other.report, report) || other.report == report));
+            (identical(other.report, report) || other.report == report) &&
+            (identical(other.reportStatus, reportStatus) ||
+                other.reportStatus == reportStatus));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -254,7 +272,8 @@ class _$ChildSessionImpl implements _ChildSession {
       endedAt,
       durationMinutes,
       const DeepCollectionEquality().hash(_activityIds),
-      report);
+      report,
+      reportStatus);
 
   /// Create a copy of ChildSession
   /// with the given fields replaced by the non-null parameter values.
@@ -279,7 +298,8 @@ abstract class _ChildSession implements ChildSession {
       final DateTime? endedAt,
       final int durationMinutes,
       final List<String> activityIds,
-      final SessionReport? report}) = _$ChildSessionImpl;
+      final SessionReport? report,
+      final String? reportStatus}) = _$ChildSessionImpl;
 
   factory _ChildSession.fromJson(Map<String, dynamic> json) =
       _$ChildSessionImpl.fromJson;
@@ -296,6 +316,8 @@ abstract class _ChildSession implements ChildSession {
   List<String> get activityIds;
   @override
   SessionReport? get report;
+  @override
+  String? get reportStatus;
 
   /// Create a copy of ChildSession
   /// with the given fields replaced by the non-null parameter values.

@@ -21,6 +21,7 @@ _$ChildSessionImpl _$$ChildSessionImplFromJson(Map<String, dynamic> json) =>
       report: json['report'] == null
           ? null
           : SessionReport.fromJson(json['report'] as Map<String, dynamic>),
+      reportStatus: json['reportStatus'] as String?,
     );
 
 Map<String, dynamic> _$$ChildSessionImplToJson(_$ChildSessionImpl instance) =>
@@ -31,4 +32,5 @@ Map<String, dynamic> _$$ChildSessionImplToJson(_$ChildSessionImpl instance) =>
       'durationMinutes': instance.durationMinutes,
       'activityIds': instance.activityIds,
       'report': instance.report,
+      'reportStatus': instance.reportStatus,
     };

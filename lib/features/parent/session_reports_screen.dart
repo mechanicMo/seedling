@@ -5,10 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:seedling/core/constants/app_constants.dart';
 import 'package:seedling/core/theme/app_theme.dart';
 import 'package:seedling/features/account/account_providers.dart';
+import 'package:seedling/features/auth/auth_providers.dart';
 import 'package:seedling/features/parent/parent_providers.dart';
 import 'package:seedling/features/profiles/child_switcher_modal.dart';
 import 'package:seedling/features/profiles/profiles_provider.dart';
 import 'package:seedling/models/models.dart';
+import 'package:seedling/services/ai_service.dart';
 
 class SessionReportsScreen extends ConsumerWidget {
   const SessionReportsScreen({super.key});
@@ -138,12 +140,67 @@ String _formatSkill(String raw) {
       .join(' ');
 }
 
-class _SessionCard extends StatelessWidget {
+class _SessionCard extends ConsumerStatefulWidget {
   const _SessionCard({required this.session});
   final ChildSession session;
 
   @override
+  ConsumerState<_SessionCard> createState() => _SessionCardState();
+}
+
+class _SessionCardState extends ConsumerState<_SessionCard> {
+  bool _retrying = false;
+
+  Future<void> _retry() async {
+    final session = widget.session;
+    final activeChild = ref.read(activeChildProfileProvider);
+    final userId = ref.read(authStateProvider).valueOrNull?.uid;
+    if (activeChild == null || userId == null) return;
+
+    setState(() => _retrying = true);
+    final firestoreService = ref.read(firestoreServiceProvider);
+    final aiService = AiService();
+
+    try {
+      await firestoreService.clearReportStatus(
+        userId: userId,
+        childId: activeChild.id,
+        sessionId: session.id,
+      );
+      await firestoreService
+          .getSessionActivities(
+        userId: userId,
+        childId: activeChild.id,
+        sessionId: session.id,
+      )
+          .then((activities) {
+        return aiService.generateSessionReport(
+          childId: activeChild.id,
+          sessionId: session.id,
+          activities: activities,
+          durationMinutes: session.durationMinutes,
+        );
+      });
+    } catch (e) {
+      await firestoreService.markReportFailed(
+        userId: userId,
+        childId: activeChild.id,
+        sessionId: session.id,
+        error: e.toString(),
+      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Report retry failed: $e')),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _retrying = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final session = widget.session;
     final fmt = DateFormat('MMM d, h:mm a');
 
     return Card(
@@ -231,13 +288,55 @@ class _SessionCard extends StatelessWidget {
               ],
             ] else ...[
               const SizedBox(height: 6),
-              Text(
-                session.activityIds.isEmpty
-                    ? 'No activities completed this session.'
-                    : 'Report generating...',
-                style: TextStyle(
-                    color: AppColors.textSecondary, fontSize: 13),
-              ),
+              Builder(builder: (_) {
+                if (session.activityIds.isEmpty) {
+                  return Text(
+                    'No activities completed this session.',
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 13),
+                  );
+                }
+
+                final endedAt = session.endedAt;
+                final stuck = endedAt != null &&
+                    DateTime.now().difference(endedAt).inSeconds > 30;
+                final failed = session.reportStatus == 'failed' ||
+                    (stuck && session.reportStatus != 'generating');
+
+                if (!failed) {
+                  return Text(
+                    'Report generating...',
+                    style: TextStyle(
+                        color: AppColors.textSecondary, fontSize: 13),
+                  );
+                }
+
+                return Row(
+                  children: [
+                    Icon(Icons.error_outline,
+                        size: 16, color: AppColors.textSecondary),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: Text(
+                        "Couldn't generate report.",
+                        style: TextStyle(
+                            color: AppColors.textSecondary, fontSize: 13),
+                      ),
+                    ),
+                    TextButton.icon(
+                      onPressed: _retrying ? null : _retry,
+                      icon: _retrying
+                          ? const SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.refresh, size: 16),
+                      label: Text(_retrying ? 'Retrying' : 'Retry'),
+                    ),
+                  ],
+                );
+              }),
             ],
           ],
         ),
