@@ -45,7 +45,7 @@ export class GroqProvider implements AIProvider {
         { role: 'system', content: systemPrompt },
         {
           role: 'user',
-          content: `Please help me with this situation and respond with JSON: ${situation}`,
+          content: `Please help me with this situation: ${situation}\n\nRespond as JSON with fields: response (string), guide_refs (string[]).`,
         },
       ],
       temperature: 0.3,
