@@ -38,12 +38,20 @@ final activeChildProfileProvider =
 
 class ActiveChildProfileNotifier extends StateNotifier<ChildProfile?> {
   ActiveChildProfileNotifier(this.ref) : super(null) {
-    // Watch childProfiles and auto-select first if none selected
+    // Keep active profile in sync with Firestore stream emissions so that
+    // settings changes (timer, enabled activity types) propagate downstream.
     ref.listen(childProfilesProvider, (_, next) {
-      final profiles = next.valueOrNull;
-      if (state == null && profiles?.isNotEmpty == true) {
-        state = profiles!.first;
+      final profiles = next.valueOrNull ?? [];
+      if (profiles.isEmpty) {
+        state = null;
+        return;
       }
+      if (state == null) {
+        state = profiles.first;
+        return;
+      }
+      final fresh = profiles.where((p) => p.id == state!.id).firstOrNull;
+      state = fresh ?? profiles.first;
     });
   }
 
