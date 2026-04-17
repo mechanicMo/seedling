@@ -40,13 +40,20 @@ class SessionReportsScreen extends ConsumerWidget {
       body: sessionsAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Error: $e')),
-        data: (sessions) {
+        data: (rawSessions) {
           if (activeChild == null) {
             return Center(
               child: Text('Select a child profile to view sessions.',
                   style: TextStyle(color: AppColors.textSecondary)),
             );
           }
+
+          // Hide short empty sessions (no activities + under 5 minutes) from view —
+          // these are typically abandoned sessions and add noise.
+          final sessions = rawSessions
+              .where((s) =>
+                  s.activityIds.isNotEmpty || s.durationMinutes >= 5)
+              .toList();
 
           if (sessions.isEmpty) {
             return Center(
